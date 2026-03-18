@@ -11,46 +11,46 @@
     hyprland.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, home-manager, hyprland, ... }: {
-    formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.alejandra;
-
-    nixosModules = {
-      hyperland = import ./modules/shared;
-    };
-
-    nixosConfigurations =
-      let
-        hosts = {
-          default = {
-            user = {
-              name = "cody";
-              group = "users";
-              home = "/home/cody";
-              description = "Cody";
-              extraGroups = [ ];
-            };
+  outputs = { self, nixpkgs, home-manager, hyprland, ... }:
+    let
+      hosts = {
+        default = {
+          user = {
+            name = "cody";
+            group = "users";
+            home = "/home/cody";
+            description = "Cody";
+            extraGroups = [ ];
           };
         };
+      };
 
-        makeHostConfig = hostName: hostData:
-          nixpkgs.lib.nixosSystem {
-            system = "x86_64-linux";
-            modules =
-              [
-                ./hosts/${hostName}/system.nix
-                home-manager.nixosModules.home-manager
-                {
-                  home-manager.useGlobalPkgs = true;
-                  home-manager.useUserPackages = true;
-                  home-manager.users.${hostData.user.name} = {
-                    imports = [ ./home.nix ];
-                  };
-                }
-                { _module.args = { inherit hyprland self; hyperlandUser = hostData.user; }; }
-              ];
-            specialArgs = { inherit hyprland self; hyperlandUser = hostData.user; };
-          };
-      in
-      nixpkgs.lib.mapAttrs makeHostConfig hosts;
-  };
+      makeHostConfig = hostName: hostData:
+        nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules =
+            [
+              ./hosts/${hostName}/system.nix
+              home-manager.nixosModules.home-manager
+              {
+                home-manager.useGlobalPkgs = true;
+                home-manager.useUserPackages = true;
+                home-manager.users.${hostData.user.name} = {
+                  imports = [ ./home.nix ];
+                };
+              }
+              { _module.args = { inherit hyprland; }; }
+            ];
+          specialArgs = { inherit hyprland; };
+        };
+    in
+    {
+      formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.alejandra;
+
+      nixosModules = {
+        hyperland = import ./modules/shared;
+      };
+
+      nixosConfigurations = nixpkgs.lib.mapAttrs makeHostConfig hosts;
+    };
 }

@@ -1,4 +1,4 @@
-{ config, pkgs, lib, hyprland, hyperlandUser ? null, self ? null, ... }:
+{ config, pkgs, lib, hyprland, self ? null, ... }:
 
 {
   imports = [
@@ -9,12 +9,12 @@
   hyperland.enable = true;
 
   hyperland.user = {
-    name = hyperlandUser.name or "cody";
-    group = hyperlandUser.group or "users";
-    home = hyperlandUser.home or "/home/${hyperlandUser.name or "cody"}";
-    description = hyperlandUser.description or "Cody";
+    name = "cody";
+    group = "users";
+    home = "/home/cody";
+    description = "Cody";
     linger = true;
-    extraGroups = hyperlandUser.extraGroups or [ ];
+    extraGroups = [ ];
   };
 
   hyperland.hyprland = {
@@ -70,7 +70,7 @@
   ];
 
   xdg.portal.enable = true;
-  xdg.portal.wlroots.enable = true;
+  xdg.portal.wlr.enable = true;
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;

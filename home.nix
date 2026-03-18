@@ -1,11 +1,8 @@
-{ config, pkgs, lib, hyperlandUser ? null, ... }:
+{ config, pkgs, lib, ... }:
 
-let
-  userName = hyperlandUser.name or "cody";
-in
 {
-  home.username = userName;
-  home.homeDirectory = "/home/${userName}";
+  home.username = "cody";
+  home.homeDirectory = "/home/cody";
   home.stateVersion = "24.05";
 
   home.packages = with pkgs; [
@@ -22,7 +19,6 @@ in
     tree
     htop
     btop
-    neofetch
     fastfetch
     direnv
     gh

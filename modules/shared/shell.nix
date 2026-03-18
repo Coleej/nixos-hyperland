@@ -24,15 +24,9 @@ in
 
   config = lib.mkIf cfg.enable {
     programs.fish.enable = true;
-    programs.atuin = {
-      enable = cfg.atuin.enable;
-      enableBashIntegration = false;
-      enableZshIntegration = false;
-    };
-
-    environment.sessionVariables = {
-      TERMINAL = cfg.defaultTerminal;
-    };
+    environment.systemPackages =
+      [ pkgs.oh-my-posh ]
+      ++ lib.optionals cfg.atuin.enable [ pkgs.atuin ];
 
     systemd.user.services.hyperland-shell-setup = {
       description = "Hyperland: setup shell config in user home";
