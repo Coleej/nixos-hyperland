@@ -32,12 +32,6 @@
     scriptsDir = ../../scripts/waybar;
   };
 
-  hyperland.shell = {
-    enable = true;
-    defaultTerminal = "alacritty";
-    atuin.enable = true;
-  };
-
   hyperland.services = {
     enable = true;
     openssh.enable = true;
@@ -74,6 +68,8 @@
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;
+
+  programs.fish.enable = true;
 
   system.stateVersion = "25.11";
 }

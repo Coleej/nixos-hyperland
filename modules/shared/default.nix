@@ -23,7 +23,6 @@ in
     };
     hyperland.hyprland.enable = true;
     hyperland.waybar.enable = true;
-    hyperland.shell.enable = true;
     hyperland.services = {
       enable = true;
       openssh.enable = true;
