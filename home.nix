@@ -3,7 +3,7 @@
 {
   home.username = "cody";
   home.homeDirectory = "/home/cody";
-  home.stateVersion = "24.05";
+  home.stateVersion = "25.11";
 
   home.packages = with pkgs; [
     neovim
@@ -25,6 +25,9 @@
     uv
     taskwarrior-tui
     newsboat
+    git-lfs
+    ranger
+    xclip
   ];
 
   programs.home-manager.enable = true;
@@ -33,6 +36,36 @@
     enable = true;
     interactiveShellInit = ''
       set -U fish_greeting ""
+
+      # Cargo env
+      if test -f "$HOME/.cargo/env"
+        . "$HOME/.cargo/env"
+      end
+
+      # Nix profile
+      if test -f "$HOME/.nix-profile/etc/profile.d/nix.sh"
+        . "$HOME/.nix-profile/etc/profile.d/nix.sh"
+      end
+
+      # Direnv
+      set -gx DIRENV_LOG_FORMAT ""
+      direnv hook fish | source
+
+      # Activate uv virtual environment
+      function activate
+        set -l venv_name $argv[1]
+        set -l venv_path "$HOME/.config/uv/venvs/$venv_name"
+        if test -z "$venv_name"
+          echo "Usage: activate <environment_name>"
+          return 1
+        end
+        if not test -d "$venv_path"
+          echo "Error: Virtual environment '$venv_name' does not exist at $venv_path."
+          return 1
+        end
+        source "$venv_path/bin/activate.fish"
+        echo "'$venv_name' virtual environment activated."
+      end
     '';
   };
 
@@ -61,5 +94,5 @@
     XDG_CONFIG_HOME = "\${HOME}/.config";
   };
 
-  home.sessionPath = [ "\${HOME}/.local/bin" ];
+  home.sessionPath = [ "\${HOME}/.local/bin" "\${HOME}/.cargo/bin" ];
 }

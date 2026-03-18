@@ -3,14 +3,13 @@
 ## Overview
 
 Flake-based NixOS configuration with Hyprland (Wayland compositor) and Home Manager.
-Structured for easy multi-host support — one host defined now, others can be added to `hosts/default.nix`.
+Structured for easy multi-host support — one host defined now, others can be added to `flake.nix`.
 
 **Repo structure:**
 ```
 nixos-hyperland/
 ├── flake.nix              # Flake inputs + nixosSystem output builder
 ├── hosts/
-│   ├── default.nix        # Host registry — add new hosts here
 │   └── default/
 │       ├── system.nix      # Host NixOS config (imports shared modules)
 │       └── hardware-configuration.nix
@@ -20,7 +19,7 @@ nixos-hyperland/
 │   ├── desktop.nix        # GDM, portals, fonts, session vars
 │   ├── hyprland.nix       # Hyprland + hyprpaper/hyprlock/hypridle
 │   ├── waybar.nix         # Waybar + scripts install
-│   ├── shell.nix          # Fish + Oh My Posh + Atuin + kitty
+│   ├── shell.nix          # Fish + Oh My Posh + Atuin
 │   ├── services.nix        # PipeWire, flatpak, polkit, blueman
 │   ├── system.nix         # Kernel, zram, fstrim, Nix GC
 │   └── packages.nix       # Shared package groups
@@ -79,17 +78,17 @@ home-manager switch --flake .#default
 
 ### Formatting / Linting
 ```bash
-# Format all .nix files
+# Format all .nix files (alejandra — idempotent, no-conflict formatting)
 nix fmt
 
-# Lint with statix
+# Lint with statix (static analysis for Nix)
 nix run nixpkgs#statix -- fix --mode=clippy ./modules/shared/*.nix
 
 # Check formatting
 nix run nixpkgs#alejandra -- --check *.nix hosts/**/*.nix modules/**/*.nix
 ```
 
-### Single-file eval
+### Single-file eval (useful for debugging a specific Nix expression)
 ```bash
 nix eval --file ./modules/shared/hyprland.nix --apply 'x: x.options.hyperland.hyprland' 2>/dev/null
 ```
@@ -101,7 +100,7 @@ nix eval --file ./modules/shared/hyprland.nix --apply 'x: x.options.hyperland.hy
 - **Modular structure**: System config in `hosts/<name>/system.nix`, user config in `home.nix`.
   Reusable logic in `modules/shared/`, shared dotfile configs in `configs/`.
 - **Multi-host**: All host-specific data (username, groups, hostname, monitor config) lives in
-  `hosts/default.nix` and `hosts/default/system.nix`. Shared modules have no host-specific values.
+  `flake.nix` (hosts attr) and `hosts/default/system.nix`. Shared modules have no host-specific values.
 - **State version**: Always set `stateVersion` to the NixOS release (e.g., `"24.05"`).
 
 ### Nix Language Style
@@ -116,8 +115,8 @@ nix eval --file ./modules/shared/hyprland.nix --apply 'x: x.options.hyperland.hy
 ### Naming Conventions
 - **Module prefix**: `hyperland.<submodule>` (e.g., `hyperland.hyprland`, `hyperland.waybar`).
 - **Option names**: `lowerCamelCase` (matches NixOS convention).
-- **File names**: `kebab-case.nix` for modules, `lowerCamelCase.nix` for helpers.
-- **Host names**: `default` (single host). Add `workstation`, `laptop`, etc. as needed.
+- **File names**: `kebab-case.nix` for modules.
+- **Host names**: `default` (single host). Add `workstation`, `laptop`, etc. in `flake.nix`.
 
 ### Nixpkgs Usage
 - **Package sets**: Always `pkgs.<name>`. No bare package names.
@@ -128,7 +127,7 @@ nix eval --file ./modules/shared/hyprland.nix --apply 'x: x.options.hyperland.hy
 - **Module args**: Prefer `{ config, pkgs, lib, ... }` as the function signature.
 - **Enable toggles**: Every shared submodule has `hyperland.<name>.enable` option.
 - **User info**: Shared via `hyperland.user.<field>` options (defined in `user.nix`).
-  Passed to NixOS modules via `_module.args.hyperlandUser` in `hosts/default.nix`.
+  Host-specific values set in `flake.nix` (hosts attr) and passed to `hosts/<name>/system.nix`.
 
 ### Home Manager
 - **User packages**: Add to `home.packages` in `home.nix`, not `environment.systemPackages`.
@@ -137,23 +136,27 @@ nix eval --file ./modules/shared/hyprland.nix --apply 'x: x.options.hyperland.hy
 
 ## Adding a New Host
 
-1. Add entry to `hosts/default.nix`:
+1. Add entry to `flake.nix` `hosts` attr:
    ```nix
    workstation = {
-     user.name = "alice";
-     user.home = "/home/alice";
-     user.extraGroups = [ "libvirtd" ];
+     user = {
+       name = "alice";
+       group = "users";
+       home = "/home/alice";
+       description = "Alice";
+       extraGroups = [ "libvirtd" ];
+     };
    };
    ```
 
-2. Create directory:
+2. Create directory and copy hardware config:
    ```bash
    mkdir -p hosts/workstation
    cp hosts/default/hardware-configuration.nix hosts/workstation/
    ```
 
 3. Edit `hosts/workstation/system.nix`:
-   - Update `hyperland.hyprland.monitorsFile` to point to your monitor config
+   - Update `hyperland.hyprland.monitorsFile` to your monitor config
    - Update `networking.hostName`
 
 4. Edit `configs/hyprland-monitors.conf` with your monitor setup.
