@@ -15,7 +15,8 @@ let
   hyprpaper = hyprlandPkgs.hyprpaper or null;
   hypridle = hyprlandPkgs.hypridle or null;
   hyprlock = hyprlandPkgs.hyprlock or null;
-  defaultWallpaper = ../../wallpapers/default.jpg;in
+  defaultWallpaper = ../../wallpapers/default.jpg;
+in
 {
   options.hyperland.hyprland = {
     enable = lib.mkEnableOption "Hyprland base setup";
@@ -164,12 +165,8 @@ let
             ln -sf ${cfg.hypridleConfig} ${userHome}/.config/hypr/hypridle.conf
           ''}
 
-          : > ${userHome}/.config/hypr/hyprland-local.conf
           ${lib.optionalString cfg.amd.enable ''
-            cat > ${userHome}/.config/hypr/hyprland-local.conf << 'EOF'
-            env = AMD_VULKAN_ICD,RADV
-            env = MESA_LOADER_DRIVER_OVERRIDE,radeonsi
-            EOF
+            printf '"'"'%s\n'"'"' "env = AMD_VULKAN_ICD,RADV" "env = MESA_LOADER_DRIVER_OVERRIDE,radeonsi" > ${userHome}/.config/hypr/hyprland-local.conf
           ''}
 
           ${lib.optionalString (cfg.scriptsDir != null) ''

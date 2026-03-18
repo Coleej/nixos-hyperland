@@ -51,7 +51,7 @@ in
               alias $t "__grc_wrap $t"
             end
           end
-          EOF
+EOF
 
           cat > ${userHome}/.config/fish/conf.d/oh-my-posh.fish << 'EOF'
           set -gx OMP_CONFIG "$HOME/.config/oh-my-posh/config.json"
@@ -67,13 +67,13 @@ in
               oh-my-posh init fish | source
             end
           end
-          EOF
+EOF
 
           cat > ${userHome}/.config/fish/conf.d/local-bin.fish << 'EOF'
           if test -d "$HOME/.local/bin"
             fish_add_path "$HOME/.local/bin"
           end
-          EOF
+EOF
 
           ${lib.optionalString (cfg.atuin.enable or false) ''
             cat > ${userHome}/.config/fish/conf.d/atuin.fish << 'ATUINEOF'
@@ -81,7 +81,7 @@ in
               set -g ATUIN_SESSION (atuin uuid)
               atuin init fish | source
             end
-            ATUINEOF
+ATUINEOF
           ''}
 
           if [ ! -f ${userHome}/.config/oh-my-posh/config.json ]; then
@@ -111,7 +111,7 @@ in
                 }
               ]
             }
-            OMP_EOF
+OMP_EOF
           fi
 
           echo "[hyperland][shell] shell setup complete"
@@ -135,7 +135,7 @@ in
           foreground #c0caf5
           shell fish
           enable_audio_bell no
-          EOF
+EOF
         '';
       };
     };
