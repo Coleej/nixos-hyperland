@@ -10,7 +10,6 @@ in
     ./desktop.nix
     ./hyprland.nix
     ./waybar.nix
-    ./shell.nix
     ./services.nix
     ./system.nix
     ./user.nix
