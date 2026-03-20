@@ -23,6 +23,7 @@ in
         grc xdg-utils
       ]))
       ++ (lib.optionals cfg.desktop.enable (with pkgs; [
+        alacritty home-manager opencode
         wl-clipboard grim slurp swappy dunst cliphist brightnessctl
         playerctl pavucontrol bibata-cursors hyprpaper hypridle hyprlock
         wofi networkmanagerapplet blueman libnotify

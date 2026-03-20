@@ -37,6 +37,8 @@
     openssh.enable = true;
   };
 
+  services.tailscale.enable = true;
+
   hyperland.packages = {
     enable = true;
     base.enable = true;
@@ -44,8 +46,14 @@
     dev.enable = true;
   };
 
-  boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/sda";
+  boot.loader.grub = {
+    enable = true;
+    device = "nodev";
+    efiSupport = true;
+    efiInstallAsRemovable = true;
+  };
+
+  boot.loader.efi.efiSysMountPoint = "/boot";
 
   networking.hostName = "nixos";
   networking.networkmanager.enable = true;

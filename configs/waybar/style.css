@@ -1,7 +1,7 @@
 /* Cyberpunk-inspired Waybar theme */
 * {
   font-family: "FiraCode Nerd Font", "Fira Code", monospace;
-  font-size: 12pt;
+  font-size: 10pt;
 }
 
 window#waybar {

@@ -167,6 +167,7 @@ in
 
           ${lib.optionalString cfg.amd.enable ''
             printf '"'"'%s\n'"'"' "env = AMD_VULKAN_ICD,RADV" "env = MESA_LOADER_DRIVER_OVERRIDE,radeonsi" > ${userHome}/.config/hypr/hyprland-local.conf
+            printf '"'"'%s\n'"'"' "source=~/.config/hypr/hyprland-local.conf" >> ${userHome}/.config/hypr/hyprland.conf
           ''}
 
           ${lib.optionalString (cfg.scriptsDir != null) ''

@@ -28,6 +28,7 @@
     git-lfs
     ranger
     xclip
+    firefox
   ];
 
   programs.home-manager.enable = true;
@@ -84,6 +85,13 @@
   programs.fzf = {
     enable = true;
     enableFishIntegration = true;
+  };
+
+  programs.alacritty = {
+    enable = true;
+    settings = {
+      font.size = 10;
+    };
   };
 
   nixpkgs.config.allowUnfree = true;
