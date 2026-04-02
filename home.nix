@@ -29,6 +29,14 @@
     ranger
     xclip
     firefox
+    tree-sitter
+    telegram-desktop
+
+    # LSP servers and formatters (managed by OS instead of Mason)
+    pyright
+    lua-language-server
+    ruff
+    stylua
   ];
 
   programs.home-manager.enable = true;
