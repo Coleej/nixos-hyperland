@@ -63,17 +63,11 @@ nix eval .#nixosConfigurations.default.config.home-manager.users.cody --json
 # Dry-run / type-check
 sudo nixos-rebuild dry-activate --flake .#default
 
-# Apply
+# Apply (system + Home Manager - use this!)
 sudo nixos-rebuild switch --flake .#default
 
 # Build only (no switch)
 nixos-rebuild build --flake .#default
-```
-
-### Home Manager (standalone)
-```bash
-home-manager -v dryActivation --flake .#default
-home-manager switch --flake .#default
 ```
 
 ### Formatting / Linting
