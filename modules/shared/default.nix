@@ -1,8 +1,10 @@
-{ lib, config, ... }:
-let
-  cfg = config.hyperland;
-in
 {
+  lib,
+  config,
+  ...
+}: let
+  cfg = config.hyperland;
+in {
   options.hyperland.enable = lib.mkEnableOption "Enable the Hyperland desktop experience";
 
   imports = [

@@ -1,9 +1,33 @@
-{ config, pkgs, lib, ... }:
-
 {
+  config,
+  pkgs,
+  lib,
+  self,
+  ...
+}: let
+  hyprConfigFiles = lib.fileset.toSource {
+    root = ./.;
+    fileset = lib.fileset.fileFilter (f: f.hasExt "conf") ./configs;
+  };
+in {
   home.username = "cody";
   home.homeDirectory = "/home/cody";
   home.stateVersion = "25.11";
+
+  home.file = {
+    ".config/hypr/hyprland-base.conf" = {
+      source = hyprConfigFiles + /configs/hyprland-base.conf;
+      force = true;
+    };
+    ".config/hypr/hyprland.conf" = {
+      source = hyprConfigFiles + /configs/hyprland-default.conf;
+      force = true;
+    };
+    ".config/hypr/hyprland-monitors.conf" = {
+      source = hyprConfigFiles + /configs/hyprland-monitors.conf;
+      force = true;
+    };
+  };
 
   home.packages = with pkgs; [
     neovim
@@ -83,6 +107,7 @@
     settings = {
       add_newline = false;
       command_timeout = 10000;
+      scan_timeout = 5000;
       character = {
         success_symbol = "[➜](bold green)";
         error_symbol = "[➜](bold red)";
@@ -97,10 +122,16 @@
 
   programs.alacritty = {
     enable = true;
-    settings = {
-      font.size = 10;
-    };
   };
+
+  home.file.".config/alacritty/alacritty.toml".text = ''
+    [font]
+    size = 12
+
+    [font.normal]
+    family = "FiraCode Nerd Font"
+  '';
+
 
   nixpkgs.config.allowUnfree = true;
 
@@ -110,5 +141,5 @@
     XDG_CONFIG_HOME = "\${HOME}/.config";
   };
 
-  home.sessionPath = [ "\${HOME}/.local/bin" "\${HOME}/.cargo/bin" ];
+  home.sessionPath = ["\${HOME}/.local/bin" "\${HOME}/.cargo/bin"];
 }

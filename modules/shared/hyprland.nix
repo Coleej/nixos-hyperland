@@ -4,22 +4,28 @@
   config,
   hyprland ? null,
   ...
-}:
-let
+}: let
   cfg = config.hyperland.hyprland;
   user = config.hyperland.user;
   userHome = user.home;
   userName = user.name;
   userGroup = user.group;
-  hyprlandPkgs = if hyprland != null then hyprland.packages.${pkgs.stdenv.system} else pkgs;
+  hyprlandPkgs =
+    if hyprland != null
+    then hyprland.packages.${pkgs.stdenv.system}
+    else pkgs;
   hyprpaper = hyprlandPkgs.hyprpaper or null;
   hypridle = hyprlandPkgs.hypridle or null;
   hyprlock = hyprlandPkgs.hyprlock or null;
   defaultWallpaper = ../../wallpapers/default.jpg;
-in
-{
+in {
   options.hyperland.hyprland = {
     enable = lib.mkEnableOption "Hyprland base setup";
+    useHomeManager = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Use Home Manager for hyprland config files (hyprland.conf, hyprland-base.conf, hyprland-monitors.conf)";
+    };
     monitorsFile = lib.mkOption {
       type = lib.types.nullOr lib.types.path;
       default = null;
@@ -61,8 +67,8 @@ in
 
     systemd.user.services.hyprvibe-hyprpaper = lib.mkIf (hyprpaper != null) {
       description = "Hyperland: hyprpaper wallpaper daemon";
-      after = [ "graphical-session.target" ];
-      wantedBy = [ "graphical-session.target" ];
+      after = ["graphical-session.target"];
+      wantedBy = ["graphical-session.target"];
       serviceConfig = {
         Type = "simple";
         ExecStart = "${pkgs.writeShellScriptBin "hyprpaper-start" ''
@@ -108,8 +114,8 @@ in
 
     systemd.user.services.hypridle = lib.mkIf (hypridle != null && cfg.hypridleConfig != null) {
       description = "Hyperland: hypridle daemon";
-      after = [ "graphical-session.target" ];
-      wantedBy = [ "graphical-session.target" ];
+      after = ["graphical-session.target"];
+      wantedBy = ["graphical-session.target"];
       serviceConfig = {
         Type = "simple";
         ExecStart = "${hypridle}/bin/hypridle --config ${userHome}/.config/hypr/hypridle.conf";
@@ -119,8 +125,8 @@ in
 
     systemd.user.services.hyprlock = lib.mkIf (hyprlock != null) {
       description = "Hyperland: hyprlock daemon";
-      after = [ "graphical-session.target" ];
-      wantedBy = [ "graphical-session.target" ];
+      after = ["graphical-session.target"];
+      wantedBy = ["graphical-session.target"];
       serviceConfig = {
         Type = "simple";
         ExecStart = "${hyprlock}/bin/hyprlock --config ${userHome}/.config/hypr/hyprlock.conf";
@@ -130,7 +136,7 @@ in
 
     systemd.user.services.hyperland-setup = {
       description = "Hyperland: setup Hyprland configs in user home";
-      wantedBy = [ "graphical-session.target" ];
+      wantedBy = ["graphical-session.target"];
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
@@ -139,33 +145,45 @@ in
           echo "[hyperland] setting up Hyprland configs"
 
           WALLPAPER_PATH="${
-            if cfg.wallpaper != null then "${cfg.wallpaper}" else "${defaultWallpaper}"
+            if cfg.wallpaper != null
+            then "${cfg.wallpaper}"
+            else "${defaultWallpaper}"
           }"
 
           mkdir -p ${userHome}/.config/hypr
           chmod 755 ${userHome}/.config/hypr
 
-          ln -sf ${../../configs/hyprland-base.conf} ${userHome}/.config/hypr/hyprland-base.conf
+          ${lib.optionalString (!cfg.useHomeManager) ''
+            ln -sf ${../../configs/hyprland-base.conf} ${userHome}/.config/hypr/hyprland-base.conf
 
-          ${lib.optionalString (cfg.monitorsFile != null) ''
-            ln -sf ${cfg.monitorsFile} ${userHome}/.config/hypr/$(basename ${cfg.monitorsFile})
+            ${lib.optionalString (cfg.monitorsFile != null) ''
+              ln -sf ${cfg.monitorsFile} ${userHome}/.config/hypr/$(basename ${cfg.monitorsFile})
+            ''}
+
+            ln -sf ${../../configs/hyprland-default.conf} ${userHome}/.config/hypr/hyprland.conf
           ''}
 
-          ln -sf ${../../configs/hyprland-default.conf} ${userHome}/.config/hypr/hyprland.conf
+          ${lib.optionalString cfg.useHomeManager ''
+            rm -f ${userHome}/.config/hypr/hyprland-base.conf ${userHome}/.config/hypr/hyprland.conf ${userHome}/.config/hypr/hyprland-monitors.conf
+          ''}
 
           ${pkgs.gnused}/bin/sed "s#__WALLPAPER__#$WALLPAPER_PATH#g" ${
-            if cfg.hyprpaperTemplate != null then "${cfg.hyprpaperTemplate}" else "${../../configs/hyprpaper-default.conf}"
+            if cfg.hyprpaperTemplate != null
+            then "${cfg.hyprpaperTemplate}"
+            else "${../../configs/hyprpaper-default.conf}"
           } > ${userHome}/.config/hypr/hyprpaper.conf
 
           ${pkgs.gnused}/bin/sed "s#__WALLPAPER__#$WALLPAPER_PATH#g" ${
-            if cfg.hyprlockTemplate != null then "${cfg.hyprlockTemplate}" else "${../../configs/hyprlock-default.conf}"
+            if cfg.hyprlockTemplate != null
+            then "${cfg.hyprlockTemplate}"
+            else "${../../configs/hyprlock-default.conf}"
           } > ${userHome}/.config/hypr/hyprlock.conf
 
           ${lib.optionalString (cfg.hypridleConfig != null) ''
             ln -sf ${cfg.hypridleConfig} ${userHome}/.config/hypr/hypridle.conf
           ''}
 
-          ${lib.optionalString cfg.amd.enable ''
+          ${lib.optionalString (cfg.amd.enable && !cfg.useHomeManager) ''
             printf '"'"'%s\n'"'"' "env = AMD_VULKAN_ICD,RADV" "env = MESA_LOADER_DRIVER_OVERRIDE,radeonsi" > ${userHome}/.config/hypr/hyprland-local.conf
             printf '"'"'%s\n'"'"' "source=~/.config/hypr/hyprland-local.conf" >> ${userHome}/.config/hypr/hyprland.conf
           ''}

@@ -1,8 +1,11 @@
-{ lib, config, pkgs, ... }:
-let
-  cfg = config.hyperland.services;
-in
 {
+  lib,
+  config,
+  pkgs,
+  ...
+}: let
+  cfg = config.hyperland.services;
+in {
   options.hyperland.services = {
     enable = lib.mkEnableOption "Shared baseline services (pipewire, flatpak, polkit, sudo)";
     openssh.enable = lib.mkEnableOption "OpenSSH server";

@@ -1,12 +1,15 @@
-{ lib, pkgs, config, ... }:
-let
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}: let
   cfg = config.hyperland.waybar;
   user = config.hyperland.user;
   userHome = user.home;
   userName = user.name;
   userGroup = user.group;
-in
-{
+in {
   options.hyperland.waybar = {
     enable = lib.mkEnableOption "Waybar setup and config install";
     configPath = lib.mkOption {
@@ -27,12 +30,12 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = [ pkgs.waybar ];
+    environment.systemPackages = [pkgs.waybar];
 
     systemd.user.services.waybar = {
       description = "Waybar status bar";
-      after = [ "graphical-session.target" ];
-      wantedBy = [ "graphical-session.target" ];
+      after = ["graphical-session.target"];
+      wantedBy = ["graphical-session.target"];
       serviceConfig = {
         Type = "simple";
         ExecStart = "${pkgs.waybar}/bin/waybar --config ${userHome}/.config/waybar/config --style ${userHome}/.config/waybar/style.css";
@@ -43,7 +46,7 @@ in
 
     systemd.user.services.hyperland-waybar-setup = {
       description = "Hyperland: setup Waybar configs in user home";
-      wantedBy = [ "graphical-session.target" ];
+      wantedBy = ["graphical-session.target"];
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
@@ -54,11 +57,15 @@ in
           mkdir -p ${userHome}/.config/waybar/scripts ${userHome}/.local/bin
 
           ln -sf ${
-            if cfg.configPath != null then "${cfg.configPath}" else "${../../configs/waybar/config.json}"
+            if cfg.configPath != null
+            then "${cfg.configPath}"
+            else "${../../configs/waybar/config.json}"
           } ${userHome}/.config/waybar/config
 
           ln -sf ${
-            if cfg.stylePath != null then "${cfg.stylePath}" else "${../../configs/waybar/style.css}"
+            if cfg.stylePath != null
+            then "${cfg.stylePath}"
+            else "${../../configs/waybar/style.css}"
           } ${userHome}/.config/waybar/style.css
 
           ${lib.optionalString (cfg.scriptsDir != null) ''

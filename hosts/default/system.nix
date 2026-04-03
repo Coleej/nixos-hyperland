@@ -1,6 +1,11 @@
-{ config, pkgs, lib, hyprland, self ? null, ... }:
-
 {
+  config,
+  pkgs,
+  lib,
+  hyprland,
+  self ? null,
+  ...
+}: {
   imports = [
     ./hardware-configuration.nix
     ../../modules/shared
@@ -14,7 +19,7 @@
     home = "/home/cody";
     description = "Cody";
     linger = true;
-    extraGroups = [ ];
+    extraGroups = [];
   };
 
   hyperland.hyprland = {
@@ -23,6 +28,7 @@
     hyprlockTemplate = ../../configs/hyprlock-default.conf;
     hypridleConfig = ../../configs/hypridle-default.conf;
     scriptsDir = ../../scripts/hyprland;
+    useHomeManager = true;
   };
 
   hyperland.waybar = {
@@ -74,7 +80,7 @@
   xdg.portal.enable = true;
   xdg.portal.wlr.enable = true;
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = ["nix-command" "flakes"];
   nixpkgs.config.allowUnfree = true;
 
   programs.fish.enable = true;

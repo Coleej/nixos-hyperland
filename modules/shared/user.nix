@@ -1,7 +1,11 @@
-{ lib, config, pkgs, ... }:
-let
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}: let
   cfg = config.hyperland.user;
-  userSubmodule = { ... }: {
+  userSubmodule = {...}: {
     options = {
       name = lib.mkOption {
         type = lib.types.str;
@@ -30,7 +34,7 @@ let
       };
       extraGroups = lib.mkOption {
         type = lib.types.listOf lib.types.str;
-        default = [ ];
+        default = [];
         description = "Additional groups to add on top of hyperland base groups.";
       };
       icon = lib.mkOption {
@@ -40,8 +44,7 @@ let
       };
     };
   };
-in
-{
+in {
   options.hyperland.user = lib.mkOption {
     type = lib.types.either lib.types.str (lib.types.submodule userSubmodule);
     default = {
@@ -50,30 +53,40 @@ in
       home = "/home/cody";
       description = "Hyperland User";
       linger = true;
-      extraGroups = [ ];
+      extraGroups = [];
     };
     description = "Primary user (string short-form or attribute set).";
     apply = value:
-      if lib.isString value then
-        { name = value; group = "users"; home = "/home/${value}"; }
-      else
-        {
-          name = value.name;
-          group = value.group or "users";
-          home = value.home or "/home/${value.name}";
-          description = value.description or "Hyperland User";
-          linger = value.linger or true;
-          extraGroups = value.extraGroups or [ ];
-          icon = value.icon or null;
-        };
+      if lib.isString value
+      then {
+        name = value;
+        group = "users";
+        home = "/home/${value}";
+      }
+      else {
+        name = value.name;
+        group = value.group or "users";
+        home = value.home or "/home/${value.name}";
+        description = value.description or "Hyperland User";
+        linger = value.linger or true;
+        extraGroups = value.extraGroups or [];
+        icon = value.icon or null;
+      };
   };
 
   config = let
     baseGroups = [
-      "networkmanager" "wheel" "video" "render" "audio" "i2c" "cdrom"
-      "plugdev" "adbusers"
+      "networkmanager"
+      "wheel"
+      "video"
+      "render"
+      "audio"
+      "i2c"
+      "cdrom"
+      "plugdev"
+      "adbusers"
     ];
-    finalGroups = lib.unique (baseGroups ++ (cfg.extraGroups or [ ]));
+    finalGroups = lib.unique (baseGroups ++ (cfg.extraGroups or []));
   in {
     users.users."${cfg.name}" = {
       isNormalUser = true;

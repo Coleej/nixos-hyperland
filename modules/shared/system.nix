@@ -1,5 +1,9 @@
-{ lib, pkgs, config, ... }:
-let
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}: let
   cfg = config.hyperland.system;
 in {
   options.hyperland.system = {

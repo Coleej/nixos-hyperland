@@ -1,5 +1,9 @@
-{ lib, pkgs, config, ... }:
-let
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}: let
   cfg = config.hyperland.desktop;
 in {
   options.hyperland.desktop = {
@@ -25,8 +29,8 @@ in {
     xdg.portal = {
       enable = true;
       xdgOpenUsePortal = true;
-      extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-      config.common.default = [ "hyprland" "gtk" ];
+      extraPortals = [pkgs.xdg-desktop-portal-gtk];
+      config.common.default = ["hyprland" "gtk"];
     };
 
     fonts.packages = lib.mkIf cfg.fonts.enable (
