@@ -36,6 +36,7 @@
     configPath = ../../configs/waybar/config.json;
     stylePath = ../../configs/waybar/style.css;
     scriptsDir = ../../scripts/waybar;
+    useHomeManager = true;
   };
 
   hyperland.services = {

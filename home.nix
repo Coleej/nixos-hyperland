@@ -5,9 +5,9 @@
   self,
   ...
 }: let
-  hyprConfigFiles = lib.fileset.toSource {
+  configFiles = lib.fileset.toSource {
     root = ./.;
-    fileset = lib.fileset.fileFilter (f: f.hasExt "conf") ./configs;
+    fileset = lib.fileset.fileFilter (f: f.hasExt "conf" || f.hasExt "json" || f.hasExt "css") ./configs;
   };
 in {
   home.username = "cody";
@@ -16,15 +16,23 @@ in {
 
   home.file = {
     ".config/hypr/hyprland-base.conf" = {
-      source = hyprConfigFiles + /configs/hyprland-base.conf;
+      source = configFiles + /configs/hyprland-base.conf;
       force = true;
     };
     ".config/hypr/hyprland.conf" = {
-      source = hyprConfigFiles + /configs/hyprland-default.conf;
+      source = configFiles + /configs/hyprland-default.conf;
       force = true;
     };
     ".config/hypr/hyprland-monitors.conf" = {
-      source = hyprConfigFiles + /configs/hyprland-monitors.conf;
+      source = configFiles + /configs/hyprland-monitors.conf;
+      force = true;
+    };
+    ".config/waybar/config" = {
+      source = configFiles + /configs/waybar/config.json;
+      force = true;
+    };
+    ".config/waybar/style.css" = {
+      source = configFiles + /configs/waybar/style.css;
       force = true;
     };
   };

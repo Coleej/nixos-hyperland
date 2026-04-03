@@ -12,6 +12,11 @@
 in {
   options.hyperland.waybar = {
     enable = lib.mkEnableOption "Waybar setup and config install";
+    useHomeManager = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Use Home Manager for waybar config files (config.json, style.css)";
+    };
     configPath = lib.mkOption {
       type = lib.types.nullOr lib.types.path;
       default = null;
@@ -56,17 +61,19 @@ in {
 
           mkdir -p ${userHome}/.config/waybar/scripts ${userHome}/.local/bin
 
-          ln -sf ${
-            if cfg.configPath != null
-            then "${cfg.configPath}"
-            else "${../../configs/waybar/config.json}"
-          } ${userHome}/.config/waybar/config
+          ${lib.optionalString (!cfg.useHomeManager) ''
+            ln -sf ${
+              if cfg.configPath != null
+              then "${cfg.configPath}"
+              else "${../../configs/waybar/config.json}"
+            } ${userHome}/.config/waybar/config
 
-          ln -sf ${
-            if cfg.stylePath != null
-            then "${cfg.stylePath}"
-            else "${../../configs/waybar/style.css}"
-          } ${userHome}/.config/waybar/style.css
+            ln -sf ${
+              if cfg.stylePath != null
+              then "${cfg.stylePath}"
+              else "${../../configs/waybar/style.css}"
+            } ${userHome}/.config/waybar/style.css
+          ''}
 
           ${lib.optionalString (cfg.scriptsDir != null) ''
             cp -f ${cfg.scriptsDir}/*.sh ${userHome}/.config/waybar/scripts/ 2>/dev/null || true
