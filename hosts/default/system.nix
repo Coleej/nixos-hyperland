@@ -66,7 +66,7 @@
   networking.networkmanager.enable = true;
 
   i18n.defaultLocale = "en_US.UTF-8";
-  time.timeZone = "America/New_York";
+  time.timeZone = "America/Chicago";
 
   hardware.graphics.enable = true;
   hardware.graphics.enable32Bit = true;
