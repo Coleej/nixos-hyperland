@@ -49,6 +49,8 @@ in {
       ]))
       ++ (lib.optionals cfg.desktop.enable (with pkgs; [
         alacritty
+        kitty
+        ghostty
         home-manager
         opencode
         wl-clipboard
