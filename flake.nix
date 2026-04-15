@@ -9,6 +9,10 @@
     };
     hyprland.url = "github:hyprwm/Hyprland";
     hyprland.inputs.nixpkgs.follows = "nixpkgs";
+    hypr-binds = {
+      url = "github:hyprland-community/hypr-binds";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -16,6 +20,7 @@
     nixpkgs,
     home-manager,
     hyprland,
+    hypr-binds,
     ...
   }: let
     hosts = {
@@ -40,7 +45,10 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.${hostData.user.name} = {
-              imports = [./home.nix];
+              imports = [
+                ./home.nix
+                hypr-binds.homeManagerModules.x86_64-linux.default
+              ];
               _module.args = {inherit self;};
             };
           }

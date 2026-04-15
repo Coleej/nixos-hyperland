@@ -4,16 +4,16 @@
   lib,
   self,
   ...
-}:
-let
+}: let
   configFiles = lib.fileset.toSource {
     root = ./.;
-    fileset = lib.fileset.fileFilter (
-      f: f.hasExt "conf" || f.hasExt "json" || f.hasExt "css"
-    ) ./configs;
+    fileset =
+      lib.fileset.fileFilter (
+        f: f.hasExt "conf" || f.hasExt "json" || f.hasExt "css"
+      )
+      ./configs;
   };
-in
-{
+in {
   home.username = "cody";
   home.homeDirectory = "/home/cody";
   home.stateVersion = "25.11";
@@ -232,6 +232,15 @@ in
     '';
   };
 
+  programs.hypr-binds = {
+    enable = true;
+    settings = {
+      launcher = {
+        app = "wofi";
+      };
+    };
+  };
+
   home.file.".config/alacritty/alacritty.toml".text = ''
     [font]
     size = 12
@@ -248,7 +257,7 @@ in
     '';
   };
 
-  home.activation.fixNetrcPermissions = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+  home.activation.fixNetrcPermissions = lib.hm.dag.entryAfter ["linkGeneration"] ''
     if [ -f "$HOME/.netrc" ]; then
       run chmod 600 "$HOME/.netrc"
     fi
@@ -263,7 +272,7 @@ in
       Type = "simple";
       ExecStart = "${pkgs.nextcloud-client}/bin/nextcloudcmd -n /home/cody/Nextcloud https://nc.codyjohnson.xyz/";
     };
-    Install.WantedBy = [ "multi-user.target" ];
+    Install.WantedBy = ["multi-user.target"];
   };
 
   systemd.user.timers.nextcloud-sync = {
@@ -272,7 +281,7 @@ in
       OnBootSec = "5min";
       OnUnitActiveSec = "1h";
     };
-    Install.WantedBy = [ "timers.target" ];
+    Install.WantedBy = ["timers.target"];
   };
 
   nixpkgs.config.allowUnfree = true;
