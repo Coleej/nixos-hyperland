@@ -1,0 +1,39 @@
+{ pkgs, ... }:
+{
+  home.packages = with pkgs; [
+    neovim
+    git
+    ripgrep
+    fd
+    fzf
+    eza
+    bat
+    jq
+    wget
+    curl
+    tree
+    htop
+    btop
+    fastfetch
+    direnv
+    gh
+    uv
+    newsboat
+    git-lfs
+    ranger
+    xclip
+    firefox
+    tree-sitter
+    telegram-desktop
+    whosthere
+    dig
+
+    pyright
+    lua-language-server
+    ruff
+    stylua
+    nixd
+    nixfmt
+    taskwarrior3
+  ];
+}

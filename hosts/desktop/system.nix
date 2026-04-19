@@ -30,6 +30,7 @@
     hypridleConfig = ../../configs/hypridle-default.conf;
     scriptsDir = ../../scripts/hyprland;
     useHomeManager = true;
+    amd.enable = true;
   };
 
   hyperland.waybar = {
@@ -60,10 +61,9 @@
     efiSupport = true;
     efiInstallAsRemovable = true;
   };
-
   boot.loader.efi.efiSysMountPoint = "/boot";
 
-  networking.hostName = "nixos";
+  networking.hostName = "desktop";
   networking.networkmanager.enable = true;
 
   i18n.defaultLocale = "en_US.UTF-8";
