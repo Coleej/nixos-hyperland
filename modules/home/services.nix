@@ -13,21 +13,28 @@
       rc.taskrc = "${config.xdg.configHome}/task/taskrc";
       sync.server.url = "https://taskchampion.codyjohnson.xyz";
       sync.server.client_id = "9ddb3dd1-e22e-469c-99c0-9a054fecb6bd";
-      sync.encryption_secret = "zuNg0hee";
     };
   };
 
-  home.file.".netrc" = {
-    text = ''
-      machine nc.codyjohnson.xyz
-      login cody
-      password 4tCn$u!fQ$tEWR^52SI*
-    '';
-  };
+  home.activation.writeNetrc = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+    secret_path="${config.sops.secrets.nextcloud_password.path}"
+    if [ -f "$secret_path" ]; then
+      password=$(cat "$secret_path")
+      printf 'machine nc.codyjohnson.xyz\nlogin cody\npassword %s\n' "$password" > "$HOME/.netrc"
+      chmod 600 "$HOME/.netrc"
+    fi
+  '';
 
-  home.activation.fixNetrcPermissions = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
-    if [ -f "$HOME/.netrc" ]; then
-      run chmod 600 "$HOME/.netrc"
+  home.activation.writeTaskchampionSecret = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+    secret_path="${config.sops.secrets.taskchampion_secret.path}"
+    taskrc="${config.xdg.configHome}/task/taskrc"
+    if [ -f "$secret_path" ] && [ -d "${config.xdg.configHome}/task" ]; then
+      secret=$(cat "$secret_path")
+      mkdir -p "${config.xdg.configHome}/task"
+      if [ -f "$taskrc" ]; then
+        ${pkgs.gnused}/bin/sed -i '/^sync\.encryption_secret=/d' "$taskrc"
+      fi
+      echo "sync.encryption_secret=$secret" >> "$taskrc"
     fi
   '';
 
