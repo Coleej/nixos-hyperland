@@ -40,7 +40,7 @@
             extraGroups = [ ];
           };
         };
-        desktop = {
+        amd-workstation = {
           user = {
             name = "cody";
             group = "users";
