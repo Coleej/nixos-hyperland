@@ -3,8 +3,17 @@
   pkgs,
   lib,
   self,
+  hostName,
   ...
 }:
+let
+  monitorsFile =
+    {
+      default = self + /hosts/default/hyprland-monitors.conf;
+      desktop = self + /hosts/desktop/hyprland-monitors.conf;
+    }
+    .${hostName} or (throw "No monitor config for host: ${hostName}");
+in
 {
   programs.alacritty = {
     enable = true;
@@ -30,6 +39,10 @@
   home.file = {
     ".config/hypr/hyprland-base.conf" = {
       source = self + /configs/hyprland-base.conf;
+      force = true;
+    };
+    ".config/hypr/hyprland-monitors.conf" = {
+      source = monitorsFile;
       force = true;
     };
     ".config/hypr/hyprland.conf" = {

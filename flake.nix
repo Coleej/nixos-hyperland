@@ -68,7 +68,10 @@
                   hypr-binds.homeManagerModules.x86_64-linux.default
                   sops-nix.homeManagerModules.default
                 ];
-                _module.args = { inherit self; };
+                _module.args = {
+                  inherit self;
+                  hostName = hostName;
+                };
               };
             }
             { _module.args = { inherit hyprland self; }; }
