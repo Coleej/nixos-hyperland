@@ -71,6 +71,7 @@
                 _module.args = {
                   inherit self;
                   hostName = hostName;
+                  hostUser = hostData.user;
                 };
               };
             }

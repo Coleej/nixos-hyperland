@@ -1,8 +1,8 @@
-{ ... }:
+{ hostUser, ... }:
 {
   imports = [ ./modules/home ];
 
-  home.username = "cody";
-  home.homeDirectory = "/home/cody";
+  home.username = hostUser.name;
+  home.homeDirectory = hostUser.home;
   home.stateVersion = "25.11";
 }
