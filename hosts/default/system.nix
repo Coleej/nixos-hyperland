@@ -14,15 +14,6 @@
 
   hyperland.enable = true;
 
-  hyperland.user = {
-    name = "cody";
-    group = "users";
-    home = "/home/cody";
-    description = "Cody";
-    linger = true;
-    extraGroups = [ ];
-  };
-
   hyperland.hyprland = {
     monitorsFile = ./hyprland-monitors.conf;
     hyprpaperTemplate = ../../configs/hyprpaper-default.conf;
