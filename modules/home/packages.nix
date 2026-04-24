@@ -35,5 +35,6 @@
     nixd
     nixfmt
     taskwarrior3
+    tre-command
   ];
 }
