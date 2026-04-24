@@ -27,7 +27,7 @@
     telegram-desktop
     whosthere
     dig
-
+    remmina
     pyright
     lua-language-server
     ruff
