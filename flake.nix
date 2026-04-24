@@ -77,7 +77,10 @@
             }
             { _module.args = { inherit hyprland self; }; }
           ];
-          specialArgs = { inherit hyprland self; };
+          specialArgs = {
+            inherit hyprland self;
+            hostUser = hostData.user;
+          };
         };
     in
     {
