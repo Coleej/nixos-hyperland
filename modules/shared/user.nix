@@ -52,14 +52,7 @@ in
 {
   options.hyperland.user = lib.mkOption {
     type = lib.types.either lib.types.str (lib.types.submodule userSubmodule);
-    default = hostUser // {
-      name = "cody";
-      group = "users";
-      home = "/home/cody";
-      description = "Hyperland User";
-      linger = true;
-      extraGroups = [ ];
-    };
+    default = hostUser;
     description = "Primary user (string short-form or attribute set).";
     apply =
       value:
