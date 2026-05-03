@@ -37,7 +37,9 @@
     openssh.enable = true;
   };
 
-  services.tailscale.enable = true;
+  services.tailscale = {
+    enable = true;
+  };
 
   hyperland.packages = {
     enable = true;
@@ -54,7 +56,7 @@
   };
   boot.loader.efi.efiSysMountPoint = "/boot";
 
-  networking.hostName = "desktop";
+  networking.hostName = "amd-workstation";
   networking.networkmanager.enable = true;
 
   i18n.defaultLocale = "en_US.UTF-8";

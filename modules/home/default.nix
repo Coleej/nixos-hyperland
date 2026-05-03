@@ -6,6 +6,7 @@
     ./desktop.nix
     ./services.nix
     ./secrets.nix
+    ./git.nix
   ];
 
   programs.home-manager.enable = true;
