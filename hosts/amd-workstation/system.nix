@@ -41,6 +41,10 @@
     enable = true;
   };
 
+  hyperland.gaming = {
+    enable = true;
+  };
+
   hyperland.packages = {
     enable = true;
     base.enable = true;

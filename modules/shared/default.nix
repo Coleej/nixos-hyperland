@@ -2,9 +2,11 @@
   lib,
   config,
   ...
-}: let
+}:
+let
   cfg = config.hyperland;
-in {
+in
+{
   options.hyperland.enable = lib.mkEnableOption "Enable the Hyperland desktop experience";
 
   imports = [
@@ -15,6 +17,7 @@ in {
     ./services.nix
     ./system.nix
     ./user.nix
+    ./gaming.nix
   ];
 
   config = lib.mkIf cfg.enable {
