@@ -63,7 +63,7 @@ window {
 }
 
 #entry:selected #text {
-  color: #1e1e2e;
+  color: #1e1e2e !important;
 }
 
 #entry #text {
