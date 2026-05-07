@@ -1,0 +1,71 @@
+* {
+  font-family: "FiraCode Nerd Font";
+  font-size: 14px;
+  color: #ffffff;
+  background-color: #1e1e2e;
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+window {
+  margin: 4px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  background-color: #1e1e2e;
+}
+
+#input {
+  padding: 6px 8px;
+  margin: 4px;
+  border-radius: 4px;
+  background-color: #313244;
+  border: 2px solid #45475a;
+  color: #cdd6f4;
+}
+
+#input:focus {
+  border-color: #89b4fa;
+  outline: none;
+  box-shadow: 0 0 10px rgba(137, 180, 250, 0.3);
+}
+
+#outer-box {
+  margin: 4px;
+  border-radius: 2px;
+  background-color: #1e1e2e;
+}
+
+#scroll {
+  margin: 2px;
+  background-color: transparent;
+}
+
+#scroll window {
+  background-color: transparent;
+}
+
+#text {
+  padding: 4px 6px;
+  margin: 1px 2px;
+  border-radius: 2px;
+}
+
+#entry {
+  padding: 6px 8px;
+  border-radius: 2px;
+}
+
+#entry:selected {
+  background-color: #89b4fa;
+  color: #1e1e2e;
+  outline: none;
+}
+
+#entry:selected #text {
+  color: #1e1e2e;
+}
+
+#entry #text {
+  color: #cdd6f4;
+}

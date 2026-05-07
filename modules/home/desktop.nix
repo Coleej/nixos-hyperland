@@ -57,6 +57,10 @@ in
       source = self + /configs/waybar/style.css;
       force = true;
     };
+    ".config/wofi/style.css" = {
+      source = self + /configs/wofi-style.css;
+      force = true;
+    };
     ".config/alacritty/alacritty.toml".text = ''
       [font]
       size = 12
