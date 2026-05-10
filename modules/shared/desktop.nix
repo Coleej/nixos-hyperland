@@ -3,9 +3,11 @@
   pkgs,
   config,
   ...
-}: let
+}:
+let
   cfg = config.hyperland.desktop;
-in {
+in
+{
   options.hyperland.desktop = {
     enable = lib.mkEnableOption "Shared desktop (Wayland env, portals, fonts, GTK/Qt)";
     fonts.enable = lib.mkEnableOption "Install recommended Nerd/base fonts";
@@ -29,14 +31,19 @@ in {
     xdg.portal = {
       enable = true;
       xdgOpenUsePortal = true;
-      extraPortals = [pkgs.xdg-desktop-portal-gtk];
-      config.common.default = ["hyprland" "gtk"];
+      extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+      config.common.default = [
+        "hyprland"
+        "gtk"
+      ];
     };
 
     fonts.packages = lib.mkIf cfg.fonts.enable (
-      with pkgs; [
+      with pkgs;
+      [
         fira-code
         fira-code-symbols
+        font-awesome
         nerd-fonts.fira-code
         nerd-fonts.hack
         noto-fonts
