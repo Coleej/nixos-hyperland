@@ -36,5 +36,6 @@
     nixfmt
     taskwarrior3
     tre-command
+    photoflare
   ];
 }
