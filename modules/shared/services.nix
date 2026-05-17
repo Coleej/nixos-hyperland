@@ -3,9 +3,11 @@
   config,
   pkgs,
   ...
-}: let
+}:
+let
   cfg = config.hyperland.services;
-in {
+in
+{
   options.hyperland.services = {
     enable = lib.mkEnableOption "Shared baseline services (pipewire, flatpak, polkit, sudo)";
     openssh.enable = lib.mkEnableOption "OpenSSH server";
@@ -36,5 +38,8 @@ in {
     services.gnome.gnome-keyring.enable = true;
 
     services.openssh.enable = lib.mkIf cfg.openssh.enable true;
+
+    # Evolution mail client
+    programs.evolution.enable = true;
   };
 }

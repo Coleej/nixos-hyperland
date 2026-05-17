@@ -37,5 +37,6 @@
     taskwarrior3
     tre-command
     imagemagick
+    protonmail-bridge-gui
   ];
 }
