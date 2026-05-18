@@ -79,6 +79,7 @@ in
           networkmanagerapplet
           blueman
           libnotify
+          libreoffice
         ]
       ))
       ++ (lib.optionals cfg.dev.enable (
