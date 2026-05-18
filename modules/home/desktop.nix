@@ -15,6 +15,18 @@ let
     .${hostName} or (throw "No monitor config for host: ${hostName}");
 in
 {
+  gtk = {
+    enable = true;
+    theme = {
+      name = "Adwaita-dark";
+      package = pkgs.gnome-themes-extra;
+    };
+    gtk3.extraConfig.gtk-application-prefer-dark-theme = true;
+    gtk4.extraConfig.gtk-application-prefer-dark-theme = true;
+  };
+
+  dconf.settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
+
   programs.alacritty = {
     enable = true;
   };
