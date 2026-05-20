@@ -97,8 +97,14 @@ in
           nodejs
           yarn
           imagemagick
+          uv
+          stdenv.cc.cc.lib
         ]
       ))
       ++ cfg.extraPackages;
+
+    environment.sessionVariables = lib.mkIf cfg.dev.enable {
+      LD_LIBRARY_PATH = lib.mkAfter [ (lib.makeLibraryPath [ pkgs.stdenv.cc.cc.lib ]) ];
+    };
   };
 }
