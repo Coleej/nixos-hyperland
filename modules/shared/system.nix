@@ -3,9 +3,11 @@
   pkgs,
   config,
   ...
-}: let
+}:
+let
   cfg = config.hyperland.system;
-in {
+in
+{
   options.hyperland.system = {
     enable = lib.mkEnableOption "Enable shared system/kernel performance settings";
     kernelPackages = lib.mkOption {
@@ -37,7 +39,9 @@ in {
 
     powerManagement = {
       enable = true;
-      cpuFreqGovernor = "performance";
+      # TLP manages CPU frequency scaling when enabled; avoid conflict by not
+      # setting a governor in that case.
+      cpuFreqGovernor = lib.mkIf (!config.services.tlp.enable) "performance";
     };
   };
 }

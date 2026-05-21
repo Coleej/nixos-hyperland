@@ -34,6 +34,7 @@
   hyperland.services = {
     enable = true;
     openssh.enable = true;
+    tlp.enable = true;
   };
 
   services.tailscale.enable = true;

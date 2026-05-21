@@ -11,6 +11,7 @@ in
   options.hyperland.services = {
     enable = lib.mkEnableOption "Shared baseline services (pipewire, flatpak, polkit, sudo)";
     openssh.enable = lib.mkEnableOption "OpenSSH server";
+    tlp.enable = lib.mkEnableOption "TLP power management (recommended for laptops)";
   };
 
   config = lib.mkIf cfg.enable {
@@ -38,6 +39,8 @@ in
     services.gnome.gnome-keyring.enable = true;
 
     services.openssh.enable = lib.mkIf cfg.openssh.enable true;
+
+    services.tlp.enable = lib.mkIf cfg.tlp.enable true;
 
     # Evolution mail client
     programs.evolution.enable = true;
