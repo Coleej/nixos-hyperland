@@ -49,6 +49,7 @@ in
           less
           eza
           grc
+          ranger
           xdg-utils
           sops
           age
