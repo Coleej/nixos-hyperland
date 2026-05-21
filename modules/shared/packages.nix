@@ -80,6 +80,8 @@ in
           blueman
           libnotify
           libreoffice
+          mpv
+          vlc
         ]
       ))
       ++ (lib.optionals cfg.dev.enable (
