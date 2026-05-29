@@ -3,11 +3,9 @@
   config,
   pkgs,
   ...
-}:
-let
+}: let
   cfg = config.hyperland.services;
-in
-{
+in {
   options.hyperland.services = {
     enable = lib.mkEnableOption "Shared baseline services (pipewire, flatpak, polkit, sudo)";
     openssh.enable = lib.mkEnableOption "OpenSSH server";
@@ -40,7 +38,13 @@ in
 
     services.openssh.enable = lib.mkIf cfg.openssh.enable true;
 
-    services.tlp.enable = lib.mkIf cfg.tlp.enable true;
+    services.tlp = lib.mkIf cfg.tlp.enable {
+      enable = true;
+      settings = {
+        START_CHARGE_THRESH_BAT0 = 40;
+        STOP_CHARGE_THRESH_BAT0 = 80;
+      };
+    };
 
     # Evolution mail client
     programs.evolution.enable = true;
