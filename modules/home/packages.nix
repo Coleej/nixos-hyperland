@@ -38,5 +38,6 @@
     tre-command
     imagemagick
     protonmail-bridge-gui
+    obsidian
   ];
 }
