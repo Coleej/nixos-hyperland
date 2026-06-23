@@ -36,6 +36,10 @@ in {
     };
     services.gnome.gnome-keyring.enable = true;
 
+    # Auto-unlock gnome-keyring at login (critical for Hyprland — no GDM PAM hook)
+    security.pam.services.login.enableGnomeKeyring = true;
+    security.pam.services.hyprlock.enableGnomeKeyring = true;
+
     services.openssh.enable = lib.mkIf cfg.openssh.enable true;
 
     services.tlp = lib.mkIf cfg.tlp.enable {
