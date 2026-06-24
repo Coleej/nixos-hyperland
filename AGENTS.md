@@ -43,6 +43,8 @@ nixos-hyperland/
 │   └── rofi-brightness.sh
 ├── wallpapers/
 │   └── default.jpg         # Placeholder — replace with your wallpaper
+├── .githooks/
+│   └── pre-commit          # Auto-formats .nix files with alejandra
 ├── home.nix               # Home Manager user config
 └── flake.lock
 ```
@@ -73,13 +75,13 @@ nixos-rebuild build --flake .#default
 ### Formatting / Linting
 ```bash
 # Format all .nix files (alejandra — idempotent, no-conflict formatting)
-nix fmt
+nix run nixpkgs#alejandra -- .
 
 # Lint with statix (static analysis for Nix)
 nix run nixpkgs#statix -- fix --mode=clippy ./modules/shared/*.nix
 
 # Check formatting
-nix run nixpkgs#alejandra -- --check *.nix hosts/**/*.nix modules/**/*.nix
+nix run nixpkgs#alejandra -- --check .
 ```
 
 ### Single-file eval (useful for debugging a specific Nix expression)
@@ -98,7 +100,7 @@ nix eval --file ./modules/shared/hyprland.nix --apply 'x: x.options.hyperland.hy
 - **State version**: Always set `stateVersion` to the NixOS release (e.g., `"24.05"`).
 
 ### Nix Language Style
-- **Formatter**: `alejandra` (idempotent). Run `nix fmt` before committing.
+- **Formatter**: `alejandra` (idempotent). Run before committing.
 - **Indentation**: 2 spaces.
 - **Attribute ordering**: Alphabetical within attribute sets, or logical (imports first).
 - **Imports**: Single `imports = []` at top of each module.
@@ -159,6 +161,6 @@ nix eval --file ./modules/shared/hyprland.nix --apply 'x: x.options.hyperland.hy
 
 ## Workflow Tips
 
-- **Before committing**: Run `nix fmt`
+- **Pre-commit hook**: Installed via `.githooks/pre-commit`. Run `git config core.hooksPath .githooks` on new clones to enable it. Auto-formats staged `.nix` files with alejandra before each commit.
 - **Debugging**: Use `nix eval .#nixosConfigurations.default.config.services.hyprland.enable`
 - **flake.lock**: Commit it for reproducible builds. Update with `nix flake update`

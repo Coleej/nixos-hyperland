@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Pre-commit hook: format staged .nix files with alejandra
+# Skip with: git commit -n / --no-verify
+
+staged=$(git diff --cached --name-only --diff-filter=ACMR | grep '\.nix$' || true)
+[ -z "$staged" ] && exit 0
+
+echo "-> Formatting staged .nix files with alejandra..."
+
+echo "$staged" | xargs nix run nixpkgs#alejandra -- 2>/dev/null || true
+
+# Re-stage files modified by the formatter
+reformatted=0
+echo "$staged" | while IFS= read -r file; do
+  if [ -f "$file" ] && ! git diff --quiet "$file"; then
+    git add "$file"
+    reformatted=$((reformatted + 1))
+  fi
+done
+
+if [ "$reformatted" -gt 0 ]; then
+  echo "-> $reformatted file(s) reformatted and re-staged."
+fi
