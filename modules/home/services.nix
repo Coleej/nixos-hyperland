@@ -3,8 +3,7 @@
   pkgs,
   lib,
   ...
-}:
-{
+}: {
   programs.taskwarrior = {
     enable = true;
     package = pkgs.taskwarrior3;
@@ -16,7 +15,7 @@
     };
   };
 
-  home.activation.writeNetrc = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+  home.activation.writeNetrc = lib.hm.dag.entryAfter ["linkGeneration"] ''
     secret_path="${config.sops.secrets.nextcloud_password.path}"
     if [ -f "$secret_path" ]; then
       password=$(cat "$secret_path")
@@ -25,7 +24,7 @@
     fi
   '';
 
-  home.activation.writeTaskchampionSecret = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+  home.activation.writeTaskchampionSecret = lib.hm.dag.entryAfter ["linkGeneration"] ''
     secret_path="${config.sops.secrets.taskchampion_secret.path}"
     taskrc="${config.xdg.configHome}/task/taskrc"
     if [ -f "$secret_path" ] && [ -d "${config.xdg.configHome}/task" ]; then
@@ -38,6 +37,20 @@
     fi
   '';
 
+  systemd.user.services.gnome-keyring-daemon = {
+    Unit = {
+      Description = "GNOME Keyring daemon";
+      Before = ["graphical-session.target"];
+      PartOf = ["graphical-session.target"];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.gnome-keyring}/bin/gnome-keyring-daemon --start --foreground --components=secrets";
+      Restart = "on-failure";
+    };
+    Install.WantedBy = ["graphical-session.target"];
+  };
+
   systemd.user.services.nextcloud-sync = {
     Unit = {
       Description = "Nextcloud sync";
@@ -47,7 +60,7 @@
       Type = "simple";
       ExecStart = "${pkgs.nextcloud-client}/bin/nextcloudcmd -n $HOME/Nextcloud https://nc.codyjohnson.xyz/";
     };
-    Install.WantedBy = [ "multi-user.target" ];
+    Install.WantedBy = ["multi-user.target"];
   };
 
   systemd.user.timers.nextcloud-sync = {
@@ -56,6 +69,6 @@
       OnBootSec = "5min";
       OnUnitActiveSec = "1h";
     };
-    Install.WantedBy = [ "timers.target" ];
+    Install.WantedBy = ["timers.target"];
   };
 }

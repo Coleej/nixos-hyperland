@@ -36,7 +36,8 @@ in {
     };
     services.gnome.gnome-keyring.enable = true;
 
-    # Auto-unlock gnome-keyring at login (critical for Hyprland — no GDM PAM hook)
+    # Auto-unlock gnome-keyring at login
+    security.pam.services.gdm.enableGnomeKeyring = true;
     security.pam.services.login.enableGnomeKeyring = true;
     security.pam.services.hyprlock.enableGnomeKeyring = true;
 

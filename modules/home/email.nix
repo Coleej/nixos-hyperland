@@ -12,4 +12,10 @@
     enable = true;
     extraPackages = [pkgs.libsecret];
   };
+
+  # Ensure protonmail-bridge starts after graphical session and keyring are ready
+  systemd.user.services.protonmail-bridge.Unit.After = lib.mkForce [
+    "graphical-session.target"
+    "gnome-keyring-daemon.service"
+  ];
 }
