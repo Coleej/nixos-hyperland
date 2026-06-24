@@ -172,7 +172,7 @@ in {
           ''}
 
           ${lib.optionalString cfg.useHomeManager ''
-            rm -f ${userHome}/.config/hypr/hyprland-base.conf ${userHome}/.config/hypr/hyprland.conf ${userHome}/.config/hypr/hyprland-monitors.conf
+            # skip — HM manages hyprland-base.conf, hyprland.conf, hyprland-monitors.conf
           ''}
 
           ${pkgs.gnused}/bin/sed "s#__WALLPAPER__#$WALLPAPER_PATH#g" ${
