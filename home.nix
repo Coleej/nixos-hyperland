@@ -1,6 +1,5 @@
-{ hostUser, ... }:
-{
-  imports = [ ./modules/home ];
+{hostUser, ...}: {
+  imports = [./modules/home];
 
   home.username = hostUser.name;
   home.homeDirectory = hostUser.home;

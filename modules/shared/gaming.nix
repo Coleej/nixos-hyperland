@@ -3,11 +3,9 @@
   config,
   pkgs,
   ...
-}:
-let
+}: let
   cfg = config.hyperland.gaming;
-in
-{
+in {
   options.hyperland.gaming = {
     enable = lib.mkEnableOption "Gaming setup (Steam, Gamescope, vulkan-tools)";
   };
@@ -29,9 +27,9 @@ in
 
     programs.gamemode.enable = true;
 
-    boot.kernelParams = [ "gamemode" ];
+    boot.kernelParams = ["gamemode"];
 
-    networking.firewall.trustedInterfaces = [ "steam" ];
+    networking.firewall.trustedInterfaces = ["steam"];
 
     networking.firewall.allowedUDPPorts = [
       27031

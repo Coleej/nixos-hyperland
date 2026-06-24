@@ -5,16 +5,16 @@
   self,
   hostName,
   ...
-}:
-let
+}: let
   monitorsFile =
     {
       default = self + /hosts/default/hyprland-monitors.conf;
       amd-workstation = self + /hosts/amd-workstation/hyprland-monitors.conf;
     }
-    .${hostName} or (throw "No monitor config for host: ${hostName}");
-in
-{
+    .${
+      hostName
+    } or (throw "No monitor config for host: ${hostName}");
+in {
   gtk = {
     enable = true;
     theme = {

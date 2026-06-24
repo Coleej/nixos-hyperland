@@ -3,11 +3,9 @@
   pkgs,
   config,
   ...
-}:
-let
+}: let
   cfg = config.hyperland.packages;
-in
-{
+in {
   options.hyperland.packages = {
     enable = lib.mkEnableOption "Shared package groups";
     base.enable = lib.mkEnableOption "Common CLI utilities";
@@ -15,7 +13,7 @@ in
     dev.enable = lib.mkEnableOption "Developer toolchain";
     extraPackages = lib.mkOption {
       type = with lib.types; listOf package;
-      default = [ ];
+      default = [];
       description = "Additional packages to append to shared packages.";
     };
   };
@@ -23,8 +21,7 @@ in
   config = lib.mkIf cfg.enable {
     environment.systemPackages =
       (lib.optionals cfg.base.enable (
-        with pkgs;
-        [
+        with pkgs; [
           htop
           btop
           bottom
@@ -56,8 +53,7 @@ in
         ]
       ))
       ++ (lib.optionals cfg.desktop.enable (
-        with pkgs;
-        [
+        with pkgs; [
           alacritty
           kitty
           ghostty
@@ -86,8 +82,7 @@ in
         ]
       ))
       ++ (lib.optionals cfg.dev.enable (
-        with pkgs;
-        [
+        with pkgs; [
           git
           gh
           gcc
@@ -107,7 +102,7 @@ in
       ++ cfg.extraPackages;
 
     environment.sessionVariables = lib.mkIf cfg.dev.enable {
-      LD_LIBRARY_PATH = lib.mkAfter [ (lib.makeLibraryPath [ pkgs.stdenv.cc.cc.lib ]) ];
+      LD_LIBRARY_PATH = lib.mkAfter [(lib.makeLibraryPath [pkgs.stdenv.cc.cc.lib])];
     };
   };
 }

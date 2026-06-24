@@ -4,20 +4,21 @@
   config,
   hyprland ? null,
   ...
-}:
-let
+}: let
   cfg = config.hyperland.hyprland;
   user = config.hyperland.user;
   userHome = user.home;
   userName = user.name;
   userGroup = user.group;
-  hyprlandPkgs = if hyprland != null then hyprland.packages.${pkgs.stdenv.system} else pkgs;
+  hyprlandPkgs =
+    if hyprland != null
+    then hyprland.packages.${pkgs.stdenv.system}
+    else pkgs;
   hyprpaper = hyprlandPkgs.hyprpaper or null;
   hypridle = hyprlandPkgs.hypridle or null;
   hyprlock = hyprlandPkgs.hyprlock or null;
   defaultWallpaper = ../../wallpapers/default.jpg;
-in
-{
+in {
   options.hyperland.hyprland = {
     enable = lib.mkEnableOption "Hyprland base setup";
     useHomeManager = lib.mkOption {
@@ -74,8 +75,8 @@ in
 
     systemd.user.services.hyprvibe-hyprpaper = lib.mkIf (hyprpaper != null) {
       description = "Hyperland: hyprpaper wallpaper daemon";
-      after = [ "graphical-session.target" ];
-      wantedBy = [ "graphical-session.target" ];
+      after = ["graphical-session.target"];
+      wantedBy = ["graphical-session.target"];
       serviceConfig = {
         Type = "simple";
         ExecStart = "${pkgs.writeShellScriptBin "hyprpaper-start" ''
@@ -121,8 +122,8 @@ in
 
     systemd.user.services.hypridle = lib.mkIf (hypridle != null && cfg.hypridleConfig != null) {
       description = "Hyperland: hypridle daemon";
-      after = [ "graphical-session.target" ];
-      wantedBy = [ "graphical-session.target" ];
+      after = ["graphical-session.target"];
+      wantedBy = ["graphical-session.target"];
       serviceConfig = {
         Type = "simple";
         ExecStart = "${hypridle}/bin/hypridle --config ${userHome}/.config/hypr/hypridle.conf";
@@ -132,8 +133,8 @@ in
 
     systemd.user.services.hyprlock = lib.mkIf (hyprlock != null) {
       description = "Hyperland: hyprlock daemon";
-      after = [ "graphical-session.target" ];
-      wantedBy = [ "graphical-session.target" ];
+      after = ["graphical-session.target"];
+      wantedBy = ["graphical-session.target"];
       serviceConfig = {
         Type = "simple";
         ExecStart = "${hyprlock}/bin/hyprlock --config ${userHome}/.config/hypr/hyprlock.conf";
@@ -143,7 +144,7 @@ in
 
     systemd.user.services.hyperland-setup = {
       description = "Hyperland: setup Hyprland configs in user home";
-      wantedBy = [ "graphical-session.target" ];
+      wantedBy = ["graphical-session.target"];
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
@@ -151,7 +152,11 @@ in
           set -euo pipefail
           echo "[hyperland] setting up Hyprland configs"
 
-          WALLPAPER_PATH="${if cfg.wallpaper != null then "${cfg.wallpaper}" else "${defaultWallpaper}"}"
+          WALLPAPER_PATH="${
+            if cfg.wallpaper != null
+            then "${cfg.wallpaper}"
+            else "${defaultWallpaper}"
+          }"
 
           mkdir -p ${userHome}/.config/hypr
           chmod 755 ${userHome}/.config/hypr
@@ -171,17 +176,15 @@ in
           ''}
 
           ${pkgs.gnused}/bin/sed "s#__WALLPAPER__#$WALLPAPER_PATH#g" ${
-            if cfg.hyprpaperTemplate != null then
-              "${cfg.hyprpaperTemplate}"
-            else
-              "${../../configs/hyprpaper-default.conf}"
+            if cfg.hyprpaperTemplate != null
+            then "${cfg.hyprpaperTemplate}"
+            else "${../../configs/hyprpaper-default.conf}"
           } > ${userHome}/.config/hypr/hyprpaper.conf
 
           ${pkgs.gnused}/bin/sed "s#__WALLPAPER__#$WALLPAPER_PATH#g" ${
-            if cfg.hyprlockTemplate != null then
-              "${cfg.hyprlockTemplate}"
-            else
-              "${../../configs/hyprlock-default.conf}"
+            if cfg.hyprlockTemplate != null
+            then "${cfg.hyprlockTemplate}"
+            else "${../../configs/hyprlock-default.conf}"
           } > ${userHome}/.config/hypr/hyprlock.conf
 
           ${lib.optionalString (cfg.hypridleConfig != null) ''

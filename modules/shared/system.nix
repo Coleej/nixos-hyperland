@@ -3,11 +3,9 @@
   pkgs,
   config,
   ...
-}:
-let
+}: let
   cfg = config.hyperland.system;
-in
-{
+in {
   options.hyperland.system = {
     enable = lib.mkEnableOption "Enable shared system/kernel performance settings";
     kernelPackages = lib.mkOption {

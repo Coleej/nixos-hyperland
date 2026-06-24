@@ -5,8 +5,7 @@
   hyprland,
   self ? null,
   ...
-}:
-{
+}: {
   imports = [
     ./hardware-configuration.nix
     ../../modules/shared
