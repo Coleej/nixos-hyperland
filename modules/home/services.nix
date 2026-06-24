@@ -37,6 +37,12 @@
     fi
   '';
 
+  systemd.user.targets.graphical-session = {
+    Unit = {
+      RefuseManualStart = lib.mkForce false;
+    };
+  };
+
   systemd.user.services.gnome-keyring-daemon = {
     Unit = {
       Description = "GNOME Keyring daemon";
