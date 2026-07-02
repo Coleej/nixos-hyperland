@@ -13,9 +13,19 @@
   # cody is created by wsl.defaultUser; just set the login shell and grant sudo.
   users.users.cody = {
     shell = pkgs.fish;
-    extraGroups = ["wheel"];
+    extraGroups = ["wheel" "docker"];
   };
   programs.fish.enable = true;
+
+  virtualisation.docker.enable = true;
+
+  environment.systemPackages = with pkgs; [
+    rustc
+    cargo
+    rust-analyzer
+    clippy
+    rustfmt
+  ];
 
   i18n.defaultLocale = "en_US.UTF-8";
   time.timeZone = "America/Chicago";
