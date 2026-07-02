@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   # NixOS-WSL host. The nixos-wsl module (added in flake.nix) supplies the
   # kernel, bootloader, and root filesystem — so there is deliberately no
   # hardware-configuration.nix, no boot loader, and no boot.kernelPackages here.
@@ -15,7 +16,10 @@
   # cody is created by wsl.defaultUser; just set the login shell and grant sudo.
   users.users.cody = {
     shell = pkgs.fish;
-    extraGroups = ["wheel" "docker"];
+    extraGroups = [
+      "wheel"
+      "docker"
+    ];
   };
   programs.fish.enable = true;
 
@@ -27,6 +31,7 @@
     rust-analyzer
     clippy
     rustfmt
+    gcc
   ];
 
   # Lets uv's own downloaded Python builds (and other prebuilt, dynamically
@@ -36,7 +41,10 @@
   # development needs; add more libraries here as specific tools need them.
   programs.nix-ld = {
     enable = true;
-    libraries = [pkgs.zlib pkgs.stdenv.cc.cc.lib];
+    libraries = [
+      pkgs.zlib
+      pkgs.stdenv.cc.cc.lib
+    ];
   };
 
   i18n.defaultLocale = "en_US.UTF-8";
