@@ -14,6 +14,8 @@
 
   networking.hostName = "wsl";
 
+  services.tailscale.enable = true;
+
   # cody is created by wsl.defaultUser; just set the login shell and grant sudo.
   users.users.cody = {
     shell = pkgs.fish;
