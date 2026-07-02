@@ -585,6 +585,11 @@ the first switch creates the `cody` user (the current instance runs as the defau
 > **Note:** switching `wsl.defaultUser` from `nixos` (the NixOS-WSL default) to `cody` creates a
 > **new** user and `/home/cody`; anything under the old `/home/nixos` does not migrate.
 
+> **Warning:** don't `sudo mkdir -p /home/cody/.config/...` before phase 1 — `cody` and
+> `/home/cody` don't exist yet, so it creates a root-owned `~/.config` that phase 2's sops step
+> will then fail to read/write. If you already did this, fix it with
+> `sudo chown -R cody:users /home/cody` before phase 2.
+
 ---
 
 ## 8. Home Manager vs System Packages
