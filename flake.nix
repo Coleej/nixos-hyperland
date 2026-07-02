@@ -21,6 +21,10 @@
       url = "github:nix-community/NixOS-WSL/main";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    claude-code-nix = {
+      url = "github:sadjow/claude-code-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -31,6 +35,7 @@
     hypr-binds,
     sops-nix,
     nixos-wsl,
+    claude-code-nix,
     ...
   }: let
     hosts = {
@@ -92,6 +97,7 @@
                   inherit self;
                   hostName = hostName;
                   hostUser = hostData.user;
+                  claudeCodePackage = claude-code-nix.packages.x86_64-linux.claude-code;
                 };
               };
             }
