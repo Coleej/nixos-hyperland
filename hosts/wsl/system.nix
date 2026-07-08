@@ -44,6 +44,7 @@
     libraries = [
       pkgs.zlib
       pkgs.stdenv.cc.cc.lib
+      pkgs.expat
     ];
   };
 
