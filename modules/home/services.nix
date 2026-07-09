@@ -64,7 +64,7 @@
     };
     Service = {
       Type = "simple";
-      ExecStart = "${pkgs.nextcloud-client}/bin/nextcloudcmd -n $HOME/Nextcloud https://nc.codyjohnson.xyz/";
+      ExecStart = "${pkgs.nextcloud-client}/bin/nextcloudcmd -n %h/Nextcloud https://nc.codyjohnson.xyz/";
     };
     Install.WantedBy = ["multi-user.target"];
   };
