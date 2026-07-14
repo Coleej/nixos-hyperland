@@ -3,8 +3,16 @@
   # NixOS-WSL host. The nixos-wsl module (added in flake.nix) supplies the
   # kernel, bootloader, and root filesystem — so there is deliberately no
   # hardware-configuration.nix, no boot loader, and no boot.kernelPackages here.
-  # This host does not import modules/shared (the Hyprland desktop stack); it is
-  # headless and terminal-only.
+  # This host does not import modules/shared's desktop stack (hyprland/waybar/
+  # desktop/gaming); it is headless and terminal-only. It does import
+  # packages.nix directly for the shared dev toolchain (gnumake, cmake, etc.).
+  imports = [ ../../modules/shared/packages.nix ];
+
+  hyperland.packages = {
+    enable = true;
+    base.enable = true;
+    dev.enable = true;
+  };
 
   wsl.enable = true;
   wsl.defaultUser = "cody";

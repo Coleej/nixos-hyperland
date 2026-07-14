@@ -10,23 +10,9 @@
   home.packages = with pkgs;
     [
       neovim
-      ripgrep
-      fd
-      fzf
-      eza
-      bat
-      jq
       wget
-      curl
-      tree
-      htop
-      btop
-      fastfetch
       direnv
-      gh
-      uv
       git-lfs
-      ranger
       tree-sitter
       dig
       pyright
