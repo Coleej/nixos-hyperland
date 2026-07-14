@@ -8,6 +8,13 @@
 
   wsl.enable = true;
   wsl.defaultUser = "cody";
+  # Default is false ("use the existing registration") because NixOS-WSL
+  # assumes Windows' own boot sequence already registers the WSLInterop
+  # binfmt_misc handler before systemd takes over as PID 1. On this host that
+  # inherited registration never happens (/proc/sys/fs/binfmt_misc has no
+  # WSLInterop entry), so .exe files (e.g. surge_stat.exe) can't run from WSL
+  # without this.
+  wsl.interop.register = true;
 
   networking.hostName = "wsl";
 
