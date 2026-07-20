@@ -39,7 +39,7 @@
     ...
   }: let
     hosts = {
-      default = {
+      thinkpad = {
         user = {
           name = "cody";
           group = "users";

@@ -8,7 +8,7 @@
 }: let
   monitorsFile =
     {
-      default = self + /hosts/default/hyprland-monitors.conf;
+      thinkpad = self + /hosts/thinkpad/hyprland-monitors.conf;
       amd-workstation = self + /hosts/amd-workstation/hyprland-monitors.conf;
     }
     .${

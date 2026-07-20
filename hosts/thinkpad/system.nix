@@ -54,7 +54,7 @@
 
   boot.loader.efi.efiSysMountPoint = "/boot";
 
-  networking.hostName = "nixos";
+  networking.hostName = "thinkpad";
   networking.networkmanager.enable = true;
 
   i18n.defaultLocale = "en_US.UTF-8";
@@ -63,6 +63,17 @@
   hardware.graphics.enable = true;
   hardware.graphics.enable32Bit = true;
   hardware.bluetooth.enable = true;
+
+  # NVIDIA Optimus dGPU (GM108/GeForce 920M) — proprietary driver
+  services.xserver.videoDrivers = ["nvidia"];
+  hardware.nvidia.modesetting.enable = true;
+  hardware.nvidia.open = false;
+  hardware.nvidia.powerManagement.enable = true;
+  hardware.nvidia.prime = {
+    sync.enable = true;
+    intelBusId = "PCI:0:2:0";
+    nvidiaBusId = "PCI:2:0:0";
+  };
 
   fonts.packages = with pkgs; [
     tokyonight-gtk-theme
