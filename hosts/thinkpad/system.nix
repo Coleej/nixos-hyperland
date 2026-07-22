@@ -64,16 +64,8 @@
   hardware.graphics.enable32Bit = true;
   hardware.bluetooth.enable = true;
 
-  # NVIDIA Optimus dGPU (GM108/GeForce 920M) — proprietary driver
-  services.xserver.videoDrivers = ["nvidia"];
-  hardware.nvidia.modesetting.enable = true;
-  hardware.nvidia.open = false;
-  hardware.nvidia.powerManagement.enable = true;
-  hardware.nvidia.prime = {
-    sync.enable = true;
-    intelBusId = "PCI:0:2:0";
-    nvidiaBusId = "PCI:2:0:0";
-  };
+  # Intel HD 530 iGPU only — GeForce 920M not supported by NVIDIA 5xx+ drivers
+  services.xserver.videoDrivers = ["modesetting"];
 
   fonts.packages = with pkgs; [
     tokyonight-gtk-theme

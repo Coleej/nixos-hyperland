@@ -195,6 +195,36 @@ nix eval --file ./modules/shared/hyprland.nix --apply 'x: x.options.hyperland.hy
 
 6. Rebuild: `sudo nixos-rebuild switch --flake .#workstation`
 
+## Known Issues
+
+### NVIDIA Legacy GPU Support (e.g., ThinkPad GeForce 920M)
+
+The NVIDIA 5xx+ proprietary drivers dropped support for Maxwell (GM10x) GPUs. If a host has an
+older NVIDIA dGPU (e.g., GeForce 920M), the default `nixpkgs` driver will fail to initialize —
+causing kernel panics or post-boot lockups. Symptoms include `[drm] No compatible format found`
+and `Cannot find any crtc or sizes` in dmesg.
+
+**Fix options in `hosts/<name>/system.nix`:**
+
+1. **Drop NVIDIA entirely** (recommended for weak dGPUs on Wayland):
+   ```nix
+   services.xserver.videoDrivers = ["modesetting"];
+   # remove all hardware.nvidia.* blocks
+   ```
+
+2. **Pin legacy driver** (if you need NVIDIA):
+   ```nix
+   services.xserver.videoDrivers = ["nvidia"];
+   hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.legacy_470;
+   ```
+
+For per-host Hyprland GPU selection, add `env` to the host-specific config
+(e.g., `hosts/<name>/hyprland-local.conf` included from `hyprland-base.conf`):
+```
+env = WLR_DRM_DEVICES,/dev/dri/card0
+```
+Don't put GPU-specific `env` in the shared `configs/hyprland-base.conf`.
+
 ## Workflow Tips
 
 - **Pre-commit hook**: Installed via `.githooks/pre-commit`. Run `git config core.hooksPath .githooks` on new clones to enable it. Auto-formats staged `.nix` files with alejandra before each commit.
