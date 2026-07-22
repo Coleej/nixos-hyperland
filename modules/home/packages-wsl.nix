@@ -15,6 +15,7 @@
       git-lfs
       tree-sitter
       dig
+      ffmpeg
       pyright
       lua-language-server
       ruff
