@@ -66,6 +66,7 @@
 
   # Intel HD 530 iGPU only — GeForce 920M not supported by NVIDIA 5xx+ drivers
   services.xserver.videoDrivers = ["modesetting"];
+  boot.blacklistedKernelModules = ["nouveau"];
 
   fonts.packages = with pkgs; [
     tokyonight-gtk-theme
