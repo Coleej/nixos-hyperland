@@ -46,6 +46,43 @@
     clippy
     rustfmt
     gcc
+
+    # nbconvert's LaTeX exporter shells out to pandoc for markdown -> LaTeX
+    # cell conversion (not just the xelatex backend below).
+    pandoc
+
+    # TeX Live for `jupyter nbconvert --to pdf` (xelatex backend). nbconvert's
+    # own docs suggest texlive-xetex + texlive-fonts-recommended +
+    # texlive-plain-generic (Debian package names), but its default LaTeX
+    # template (style_jupyter.tex.j2 / base.tex.j2) also needs several
+    # packages not in that set -- found by iterating actual xelatex "File
+    # X.sty not found" errors on a real notebook export (2026-07-28):
+    # tcolorbox (+ pgf/environ/trimspaces/pdfcol), upquote, titling,
+    # enumitem, ulem, soul, rsfs (mathrsfs.sty), adjustbox (+ collectbox),
+    # eurosym, grffile, fancyvrb. scheme-medium already covers the rest
+    # (graphicx, caption, float, xcolor, geometry, amsmath, hyperref, ...).
+    # Not texlive.combined.scheme-full, which is multiple GB.
+    (texlive.combine {
+      inherit (texlive)
+        scheme-medium
+        tcolorbox
+        pgf
+        environ
+        trimspaces
+        pdfcol
+        upquote
+        titling
+        enumitem
+        ulem
+        soul
+        rsfs
+        adjustbox
+        collectbox
+        eurosym
+        grffile
+        fancyvrb
+        ;
+    })
   ];
 
   # Lets uv's own downloaded Python builds (and other prebuilt, dynamically
