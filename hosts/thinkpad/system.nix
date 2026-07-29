@@ -43,6 +43,7 @@
     base.enable = true;
     desktop.enable = true;
     dev.enable = true;
+    extraPackages = with pkgs; [android-tools];
   };
 
   boot.loader.grub = {
