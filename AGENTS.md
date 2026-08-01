@@ -225,6 +225,14 @@ env = WLR_DRM_DEVICES,/dev/dri/card0
 ```
 Don't put GPU-specific `env` in the shared `configs/hyprland-base.conf`.
 
+## Current Status
+
+The migration to greetd+tuigreet as the display manager is complete and working.
+
+### Next Steps
+- Migrate greetd+tuigreet DM to other graphical hosts (e.g., amd-workstation)
+- Update flake to latest inputs
+
 ## Workflow Tips
 
 - **Pre-commit hook**: Installed via `.githooks/pre-commit`. Run `git config core.hooksPath .githooks` on new clones to enable it. Auto-formats staged `.nix` files with alejandra before each commit.

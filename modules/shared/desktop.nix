@@ -22,14 +22,14 @@ in {
     };
 
     # greetd is a minimal Wayland-capable display/login manager; tuigreet is a
-    # TUI greeter that runs inside it. `--cmd Hyprland` makes tuigreet exec
-    # Hyprland (not a getty/login shell) after a successful password entry.
+    # TUI greeter that runs inside it. `--cmd start-hyprland` launches via the
+    # wrapper script that sets up XDG_CURRENT_DESKTOP, portals, etc.
     services.greetd = {
       enable = true;
       restart = true;
       settings.default_session = {
         user = "greeter";
-        command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd Hyprland";
+        command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd start-hyprland";
       };
     };
 
