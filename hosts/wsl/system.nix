@@ -63,7 +63,8 @@
     # (graphicx, caption, float, xcolor, geometry, amsmath, hyperref, ...).
     # Not texlive.combined.scheme-full, which is multiple GB.
     (texlive.combine {
-      inherit (texlive)
+      inherit
+        (texlive)
         scheme-medium
         tcolorbox
         pgf

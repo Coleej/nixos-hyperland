@@ -21,10 +21,30 @@ in {
       XCURSOR_SIZE = "24";
     };
 
-    services.displayManager.gdm = {
+    # greetd is a minimal Wayland-capable display/login manager; tuigreet is a
+    # TUI greeter that runs inside it. `--cmd Hyprland` makes tuigreet exec
+    # Hyprland (not a getty/login shell) after a successful password entry.
+    services.greetd = {
       enable = true;
-      wayland = true;
+      restart = true;
+      settings.default_session = {
+        user = "greeter";
+        command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd Hyprland";
+      };
     };
+
+    # greetd runs the greeter as a dedicated, unprivileged user so the
+    # kiosk-mode login screen has no extra privileges and PAM can be locked
+    # down independently of the real user. isSystemUser (not isNormalUser)
+    # because uid < 1000 is reserved for system accounts.
+    users.users.greeter = {
+      isSystemUser = true;
+      uid = 400;
+      home = "/var/run/greetd";
+      group = "greeter";
+      description = "greetd greeter user";
+    };
+    users.groups.greeter = {};
 
     xdg.portal = {
       enable = true;

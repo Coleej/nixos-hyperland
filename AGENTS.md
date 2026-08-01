@@ -3,7 +3,7 @@
 ## Overview
 
 Flake-based NixOS configuration with Hyprland (Wayland compositor), Home Manager, and sops-nix
-secrets. Three hosts are defined in `flake.nix`'s `hosts` attrset: `default` and `amd-workstation`
+secrets. Three hosts are defined in `flake.nix`'s `hosts` attrset: `thinkpad` and `amd-workstation`
 (Hyprland desktops) and `wsl` (headless NixOS-WSL, terminal-only) — more can be added the same way.
 
 `makeHostConfig` supports two optional per-host flags in the `hosts` attrset: `wsl = true` adds
@@ -15,12 +15,12 @@ Home Manager entrypoint (default `./home.nix`; WSL uses `./home-wsl.nix`).
 nixos-hyperland/
 ├── flake.nix                  # Flake inputs (nixpkgs, home-manager, hyprland, hypr-binds, sops-nix) + hosts attrset
 ├── hosts/
-│   ├── default/
+│   ├── thinkpad/
 │   │   ├── system.nix          # Host NixOS config (imports modules/shared)
 │   │   ├── hardware-configuration.nix
 │   │   └── hyprland-monitors.conf  # Per-host monitor layout
 │   ├── amd-workstation/
-│   │   ├── system.nix          # Same as default, plus hyperland.hyprland.amd.enable + hyperland.gaming.enable
+│   │   ├── system.nix          # Same as thinkpad, plus hyperland.hyprland.amd.enable + hyperland.gaming.enable
 │   │   ├── hardware-configuration.nix
 │   │   └── hyprland-monitors.conf
 │   └── wsl/
@@ -29,10 +29,10 @@ nixos-hyperland/
 │   ├── shared/                # NixOS modules, options under hyperland.<name>
 │   │   ├── default.nix         # hyperland.enable gate + default sub-option wiring
 │   │   ├── user.nix            # User creation (hyperland.user.*)
-│   │   ├── desktop.nix         # GDM, portals, fonts, Wayland session vars
+│   │   ├── desktop.nix         # greetd+tuigreet, portals, fonts, Wayland session vars, greeter user
 │   │   ├── hyprland.nix        # Hyprland + hyprpaper/hyprlock/hypridle systemd services
 │   │   ├── waybar.nix          # Waybar systemd service + config install
-│   │   ├── services.nix        # openssh, tlp
+│   │   ├── services.nix        # openssh, tlp, pam keyring
 │   │   ├── system.nix          # Kernel, zram, fstrim, Nix GC, power management
 │   │   ├── packages.nix        # base/desktop/dev package groups
 │   │   └── gaming.nix          # Steam, Gamescope, gamemode (amd-workstation only)
@@ -77,25 +77,25 @@ nixos-hyperland/
 ### Evaluate the full configuration
 ```bash
 # System config
-nix eval .#nixosConfigurations.default.config.system.build.toplevel --json
+nix eval .#nixosConfigurations.thinkpad.config.system.build.toplevel --json
 
 # Home Manager user config
-nix eval .#nixosConfigurations.default.config.home-manager.users.cody --json
+nix eval .#nixosConfigurations.thinkpad.config.home-manager.users.cody --json
 ```
 
 ### Build and apply
 ```bash
 # Dry-run / type-check
-sudo nixos-rebuild dry-activate --flake .#default        # or .#amd-workstation
+sudo nixos-rebuild dry-activate --flake .#thinkpad        # or .#amd-workstation
 
 # Apply (system + Home Manager - use this!)
-sudo nixos-rebuild switch --flake .#default
+sudo nixos-rebuild switch --flake .#thinkpad
 
 # Build only (no switch)
-nixos-rebuild build --flake .#default
+nixos-rebuild build --flake .#thinkpad
 
 # Home Manager only (faster iteration, no system rebuild)
-home-manager switch --flake .#default
+home-manager switch --flake .#thinkpad
 ```
 
 ### Formatting / Linting
@@ -142,7 +142,7 @@ nix eval --file ./modules/shared/hyprland.nix --apply 'x: x.options.hyperland.hy
   `programs.*`/`home.*`/`services.*` — no namespace indirection.
 - **Option names**: `lowerCamelCase` (matches NixOS convention).
 - **File names**: `kebab-case.nix` for modules.
-- **Host names**: `default`, `amd-workstation`, `wsl`. Add more the same way in `flake.nix`.
+- **Host names**: `thinkpad`, `amd-workstation`, `wsl`. Add more the same way in `flake.nix`.
 
 ### Nixpkgs Usage
 - **Package sets**: Always `pkgs.<name>`. No bare package names.
@@ -180,11 +180,11 @@ nix eval --file ./modules/shared/hyprland.nix --apply 'x: x.options.hyperland.hy
 2. Create directory and copy hardware config:
    ```bash
    mkdir -p hosts/workstation
-   cp hosts/default/hardware-configuration.nix hosts/workstation/
-   cp hosts/default/hyprland-monitors.conf hosts/workstation/
+   cp hosts/thinkpad/hardware-configuration.nix hosts/workstation/
+   cp hosts/thinkpad/hyprland-monitors.conf hosts/workstation/
    ```
 
-3. Edit `hosts/workstation/system.nix` (copy from `hosts/default/system.nix` as a starting point):
+3. Edit `hosts/workstation/system.nix` (copy from `hosts/thinkpad/system.nix` as a starting point):
    - `hyperland.hyprland.monitorsFile` should point at `./hyprland-monitors.conf`
    - Update `networking.hostName`
 
@@ -228,7 +228,11 @@ Don't put GPU-specific `env` in the shared `configs/hyprland-base.conf`.
 ## Workflow Tips
 
 - **Pre-commit hook**: Installed via `.githooks/pre-commit`. Run `git config core.hooksPath .githooks` on new clones to enable it. Auto-formats staged `.nix` files with alejandra before each commit.
-- **Debugging**: Use `nix eval .#nixosConfigurations.default.config.hyperland.hyprland.enable`
+- **Debugging**: Use `nix eval .#nixosConfigurations.thinkpad.config.hyperland.hyprland.enable`
 - **flake.lock**: Commit it for reproducible builds. Update with `nix flake update`
 - **Secrets**: Edit `secrets/secrets.yaml` with `sops secrets/secrets.yaml` — never hand-edit the
   encrypted file directly.
+- **Display manager**: greetd+tuigreet is configured in `modules/shared/desktop.nix`
+  (`services.greetd`). To switch DMs, edit that file; auto-login and tuigreet flags live in the
+  same block. The `greeter` user is created in the same module and is intentionally separate from
+  `hyperland.user`.
