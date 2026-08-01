@@ -3,5 +3,5 @@
 
   home.username = hostUser.name;
   home.homeDirectory = hostUser.home;
-  home.stateVersion = "25.11";
+  home.stateVersion = "26.05";
 }

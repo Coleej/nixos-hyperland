@@ -2,7 +2,7 @@
 
 A flake-based NixOS system configuration with **Hyprland** (Wayland compositor),
 **Home Manager** for user-level dotfiles and packages, **sops-nix** for encrypted secrets, and a
-modular structure supporting multiple hosts: `default` and `amd-workstation` (Hyprland desktops)
+modular structure supporting multiple hosts: `thinkpad` and `amd-workstation` (Hyprland desktops)
 plus `wsl` (headless NixOS-WSL, terminal-only).
 
 ---
@@ -78,14 +78,14 @@ Then copy the generated `hardware-configuration.nix` into this repo:
 
 ```bash
 # On the live system, clone or copy your config into /mnt/etc/nixos/
-cp -r /path/to/nixos-hyperland /mnt/etc/nixos/
+cp -r /path/to/hyperland /mnt/etc/nixos/
 ```
 
 ### 1.4 Edit the Configuration
 
 At minimum, edit these files **before building**:
 
-**`hosts/default/hardware-configuration.nix`** — update the root and boot device:
+**`hosts/thinkpad/hardware-configuration.nix`** — update the root and boot device:
 ```nix
 fileSystems."/" = {
   device = "/dev/sda1";   # Your root partition
@@ -98,7 +98,7 @@ fileSystems."/boot" = {
 };
 ```
 
-**`hosts/default/hyprland-monitors.conf`** — configure your display:
+**`hosts/thinkpad/hyprland-monitors.conf`** — configure your display:
 ```conf
 # Example single monitor (replace with your actual monitor name and resolution)
 monitor=DP-1,2560x1440@144,0x0,1
@@ -116,22 +116,22 @@ monitor=DP-1,2560x1440@144,0x0,1
 cd /mnt/etc/nixos
 
 # Dry-run first to catch any errors
-sudo nixos-rebuild dry-activate --flake .#default
+sudo nixos-rebuild dry-activate --flake .#thinkpad
 
 # If dry-run succeeds, install
-sudo nixos-rebuild switch --flake .#default
+sudo nixos-rebuild switch --flake .#thinkpad
 ```
 
 ### 1.6 Post-Install
 
-Reboot. If using GDM, select **Hyprland** from the session picker on the login screen.
+Reboot. `greetd` + `tuigreet` launches Hyprland automatically on successful login.
 
 ### 1.7 Apply Home Manager Separately (Recommended)
 
 Home Manager can be updated independently of the system:
 
 ```bash
-home-manager switch --flake .#default
+home-manager switch --flake .#thinkpad
 ```
 
 ---
@@ -141,14 +141,14 @@ home-manager switch --flake .#default
 ### Rebuild the system
 
 ```bash
-cd ~/Projects/Nix/nixos-hyperland
-sudo nixos-rebuild switch --flake .#default
+cd ~/Projects/Nix/hyperland
+sudo nixos-rebuild switch --flake .#thinkpad
 ```
 
 ### Update Home Manager only (faster, no system restart needed)
 
 ```bash
-home-manager switch --flake .#default
+home-manager switch --flake .#thinkpad
 ```
 
 ### Update flake inputs (nixpkgs, home-manager, hyprland, hypr-binds, sops-nix)
@@ -170,12 +170,12 @@ nix fmt
 ## 3. Repository Structure
 
 ```
-nixos-hyperland/
+hyperland/
 ├── flake.nix                       # Flake definition — inputs (incl. hypr-binds, sops-nix), outputs, hosts
 ├── flake.lock                      # Locked versions of all flake inputs
 │
 ├── hosts/                          # Per-host NixOS configurations
-│   ├── default/
+│   ├── thinkpad/
 │   │   ├── system.nix              # System config for this host
 │   │   ├── hardware-configuration.nix  # Kernel modules, filesystem layout (from nixos-generate-config)
 │   │   └── hyprland-monitors.conf  # Per-host monitor setup (EDIT THIS)
@@ -254,7 +254,7 @@ nixos-hyperland/
 
 `flake.nix` defines all inputs (`nixpkgs`, `home-manager`, `hyprland`, `hypr-binds`, `sops-nix`)
 and outputs. It registers per-host configurations by adding entries to the `hosts` attribute set
-(currently `default` and `amd-workstation`). Each host gets its own `nixosSystem` derivation via
+(currently `thinkpad` and `amd-workstation`). Each host gets its own `nixosSystem` derivation via
 `makeHostConfig`, which also wires up `home-manager.users.<name>` and the sops-nix NixOS + Home
 Manager modules for that host.
 
@@ -279,13 +279,13 @@ Each module can be enabled or disabled independently, and hosts can override any
 The dependency chain is:
 
 ```
-flake.nix  (hosts: default, amd-workstation)
+flake.nix  (hosts: thinkpad, amd-workstation)
   └── makeHostConfig → nixosConfigurations.<host>
         ├── hosts/<host>/system.nix        ← host-specific config, sets hyperland.* options
         │     └── imports modules/shared
         │           ├── default.nix        → hyperland.enable gate + default sub-option wiring
         │           ├── user.nix           → sets up user account + groups
-        │           ├── desktop.nix        → GDM, portals, fonts, env vars
+        │           ├── desktop.nix        → greetd+tuigreet, portals, fonts, env vars
         │           ├── hyprland.nix       → Hyprland WM + systemd user services
         │           ├── waybar.nix         → Waybar + systemd user services
         │           ├── services.nix       → PipeWire, blueman, polkit, gnome-keyring, tlp...
@@ -400,7 +400,7 @@ System services. Options:
 - `hyperland.services.tlp.enable` — TLP power management (laptops)
 
 Always-on when the module is enabled: PipeWire (+ ALSA/PulseAudio/JACK compat), flatpak, polkit,
-rtkit, udisks2/gvfs/tumbler, blueman, avahi (mDNS), gnome-keyring (with PAM auto-unlock for GDM,
+rtkit, udisks2/gvfs/tumbler, blueman, avahi (mDNS), gnome-keyring (with PAM auto-unlock for greetd,
 login, and hyprlock), and Evolution.
 
 ### `modules/shared/gaming.nix` (NixOS)
@@ -410,7 +410,7 @@ firewall ports/interfaces Steam remote play/in-home streaming needs. Enabled on 
 
 ### `modules/shared/desktop.nix` (NixOS)
 
-Desktop environment basics — GDM Wayland, portals, font packages, Wayland session env vars.
+Desktop environment basics — greetd+tuigreet login, portals, font packages, Wayland session env vars.
 Most options here are always-on for this config; `hyperland.desktop.fonts.enable` gates font installs.
 
 ### `modules/home/secrets.nix` (Home Manager)
@@ -486,7 +486,7 @@ Awesome, Liberation.
 
 ## 7. Adding a New Host
 
-Two hosts exist today: `default` and `amd-workstation` (the latter also enables
+Two hosts exist today: `thinkpad` and `amd-workstation` (the latter also enables
 `hyperland.hyprland.amd.enable` and `hyperland.gaming.enable`). To add another:
 
 ### Step 1: Add the host entry in `flake.nix`
@@ -495,7 +495,7 @@ Add an entry to the `hosts` attrset in `flake.nix`:
 
 ```nix
 hosts = {
-  default = {
+  thinkpad = {
     user = { name = "cody"; group = "users"; home = "/home/cody"; extraGroups = [ ]; };
   };
   amd-workstation = {
@@ -511,13 +511,13 @@ hosts = {
 
 ```bash
 mkdir -p hosts/workstation
-cp hosts/default/hardware-configuration.nix hosts/workstation/
-cp hosts/default/hyprland-monitors.conf hosts/workstation/
+cp hosts/thinkpad/hardware-configuration.nix hosts/workstation/
+cp hosts/thinkpad/hyprland-monitors.conf hosts/workstation/
 ```
 
 ### Step 3: Edit `hosts/workstation/system.nix`
 
-Copy from `hosts/default/system.nix` and update:
+Copy from `hosts/thinkpad/system.nix` and update:
 - `hyperland.hyprland.monitorsFile` — point to `./hyprland-monitors.conf`
 - `networking.hostName` — set the hostname
 - `hyperland.user` — user info
@@ -558,7 +558,7 @@ because sops needs the age key under `/home/cody/.config/…`, but `/home/cody` 
 the first switch creates the `cody` user (the current instance runs as the default `nixos` user):
 
 1. **Get the flake onto the WSL Linux filesystem.** Clone/copy this repo into the WSL instance's
-   ext4 filesystem (e.g. `~/nixos-hyperland` or `/etc/nixos`), **not** under `/mnt/c/...` — Windows
+   ext4 filesystem (e.g. `~/hyperland` or `/etc/nixos`), **not** under `/mnt/c/...` — Windows
    mounts have broken permissions and poor performance.
 
 2. **Phase 1 — bring up the box without secrets.** Temporarily comment out **both**
@@ -614,7 +614,7 @@ or are needed by system services.
 ## 9. Common Tasks
 
 ### Add a package to the system
-Edit `hosts/default/system.nix`:
+Edit `hosts/thinkpad/system.nix`:
 ```nix
 hyperland.packages = {
   enable = true;
@@ -636,7 +636,7 @@ home.packages = with pkgs; [
 ```
 
 ### Change the wallpaper
-Edit `hosts/default/system.nix`:
+Edit `hosts/thinkpad/system.nix`:
 ```nix
 hyperland.hyprland.wallpaper = /path/to/your/wallpaper.jpg;
 ```
@@ -667,7 +667,7 @@ windowrule = workspace special:obsidian silent, match:initial_class obsidian
 ```
 
 ### Enable SSH server
-Already enabled in `hosts/default/system.nix`. To disable:
+Already enabled in `hosts/thinkpad/system.nix`. To disable:
 ```nix
 hyperland.services.openssh.enable = false;
 ```
@@ -707,14 +707,14 @@ waybar --log-errors
 ### Home Manager not applying
 
 ```bash
-home-manager switch --flake .#default -v
+home-manager switch --flake .#thinkpad -v
 ```
 
 ### Config evaluates but build fails
 
 Run the full rebuild with `--show-trace`:
 ```bash
-sudo nixos-rebuild switch --flake .#default --show-trace
+sudo nixos-rebuild switch --flake .#thinkpad --show-trace
 ```
 
 ### Check which NixOS/Hyprland/Home Manager versions are in use

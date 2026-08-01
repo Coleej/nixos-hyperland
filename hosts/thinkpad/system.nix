@@ -70,7 +70,6 @@
   boot.blacklistedKernelModules = ["nouveau"];
 
   fonts.packages = with pkgs; [
-    tokyonight-gtk-theme
     papirus-icon-theme
     bibata-cursors
   ];

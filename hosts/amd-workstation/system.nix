@@ -70,7 +70,6 @@
   hardware.bluetooth.enable = true;
 
   fonts.packages = with pkgs; [
-    tokyonight-gtk-theme
     papirus-icon-theme
     bibata-cursors
   ];

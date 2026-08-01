@@ -36,8 +36,6 @@ in {
     };
     services.gnome.gnome-keyring.enable = true;
 
-    # Auto-unlock gnome-keyring at login (greetd pam service; was `gdm` before
-    # the greetd migration).
     security.pam.services.greetd.enableGnomeKeyring = true;
     security.pam.services.login.enableGnomeKeyring = true;
     security.pam.services.hyprlock.enableGnomeKeyring = true;

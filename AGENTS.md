@@ -12,7 +12,7 @@ Home Manager entrypoint (default `./home.nix`; WSL uses `./home-wsl.nix`).
 
 **Repo structure:**
 ```
-nixos-hyperland/
+hyperland/
 ├── flake.nix                  # Flake inputs (nixpkgs, home-manager, hyprland, hypr-binds, sops-nix) + hosts attrset
 ├── hosts/
 │   ├── thinkpad/
@@ -227,10 +227,9 @@ Don't put GPU-specific `env` in the shared `configs/hyprland-base.conf`.
 
 ## Current Status
 
-The migration to greetd+tuigreet as the display manager is complete and working.
+greetd+tuigreet is the display manager for all graphical hosts (thinkpad, amd-workstation).
 
 ### Next Steps
-- Migrate greetd+tuigreet DM to other graphical hosts (e.g., amd-workstation)
 - Update flake to latest inputs
 
 ## Workflow Tips
