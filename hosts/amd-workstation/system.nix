@@ -14,7 +14,7 @@
   hyperland.enable = true;
 
   hyperland.hyprland = {
-    monitorsFile = ./hyprland-monitors.conf;
+    monitorsFile = ./monitors.lua;
     hyprpaperTemplate = ../../configs/hyprpaper-default.conf;
     hyprlockTemplate = ../../configs/hyprlock-default.conf;
     hypridleConfig = ../../configs/hypridle-default.conf;

@@ -8,12 +8,12 @@
 }: let
   monitorsFile =
     {
-      thinkpad = self + /hosts/thinkpad/hyprland-monitors.conf;
-      amd-workstation = self + /hosts/amd-workstation/hyprland-monitors.conf;
+      thinkpad = self + /hosts/thinkpad/monitors.lua;
+      amd-workstation = self + /hosts/amd-workstation/monitors.lua;
     }
     .${
       hostName
-    } or (throw "No monitor config for host: ${hostName}");
+    } or (throw "No monitors.lua for host: ${hostName}");
 in {
   gtk = {
     enable = true;
@@ -49,16 +49,28 @@ in {
   };
 
   home.file = {
-    ".config/hypr/hyprland-base.conf" = {
-      source = self + /configs/hyprland-base.conf;
+    ".config/hypr/hyprland.lua" = {
+      source = self + /configs/hyprland.lua;
       force = true;
     };
-    ".config/hypr/hyprland-monitors.conf" = {
+    ".config/hypr/autostart.lua" = {
+      source = self + /configs/autostart.lua;
+      force = true;
+    };
+    ".config/hypr/window-rules.lua" = {
+      source = self + /configs/window-rules.lua;
+      force = true;
+    };
+    ".config/hypr/animations.lua" = {
+      source = self + /configs/animations.lua;
+      force = true;
+    };
+    ".config/hypr/keybinds.lua" = {
+      source = self + /configs/keybinds.lua;
+      force = true;
+    };
+    ".config/hypr/monitors.lua" = {
       source = monitorsFile;
-      force = true;
-    };
-    ".config/hypr/hyprland.conf" = {
-      source = self + /configs/hyprland-default.conf;
       force = true;
     };
     ".config/waybar/config" = {
