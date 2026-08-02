@@ -11,10 +11,10 @@ hl.bind(mod .. " + RETURN", hl.dsp.exec_cmd(terminal))
 hl.bind(mod .. " + SHIFT + RETURN", hl.dsp.exec_cmd(browser))
 
 -- Window management
-hl.bind(mod .. " + Q", hl.dsp.kill_active)
-hl.bind(mod .. " + M", hl.dsp.exit)
+hl.bind(mod .. " + Q", hl.dsp.window.kill())
+hl.bind(mod .. " + M", hl.dsp.exit())
 hl.bind(mod .. " + x", hl.dsp.exec_cmd("hyprlock"))
-hl.bind(mod .. " + V", hl.dsp.togglefloating())
+hl.bind(mod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mod .. " + SPACE", hl.dsp.exec_cmd(menu))
 hl.bind(mod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mod .. " + ALT + J", hl.dsp.layout("togglesplit"))
@@ -24,41 +24,41 @@ hl.bind(mod .. " + SHIFT + O", hl.dsp.exec_cmd("hyprctl dispatch dpms off"))
 hl.bind(mod .. " + ALT + L", hl.dsp.exec_cmd("hyprctl dispatch dpms on"))
 
 -- Focus
-hl.bind(mod .. " + left", hl.dsp.movefocus("l"))
-hl.bind(mod .. " + right", hl.dsp.movefocus("r"))
-hl.bind(mod .. " + up", hl.dsp.movefocus("u"))
-hl.bind(mod .. " + down", hl.dsp.movefocus("d"))
+hl.bind(mod .. " + left", hl.dsp.focus({ direction = "left" }))
+hl.bind(mod .. " + right", hl.dsp.focus({ direction = "right" }))
+hl.bind(mod .. " + up", hl.dsp.focus({ direction = "up" }))
+hl.bind(mod .. " + down", hl.dsp.focus({ direction = "down" }))
 
-hl.bind(mod .. " + h", hl.dsp.movefocus("l"))
-hl.bind(mod .. " + j", hl.dsp.movefocus("d"))
-hl.bind(mod .. " + k", hl.dsp.movefocus("u"))
-hl.bind(mod .. " + l", hl.dsp.movefocus("r"))
+hl.bind(mod .. " + h", hl.dsp.focus({ direction = "left" }))
+hl.bind(mod .. " + j", hl.dsp.focus({ direction = "down" }))
+hl.bind(mod .. " + k", hl.dsp.focus({ direction = "up" }))
+hl.bind(mod .. " + l", hl.dsp.focus({ direction = "right" }))
 
 -- Move
-hl.bind(mod .. " + SHIFT + h", hl.dsp.movewindow("l"))
-hl.bind(mod .. " + SHIFT + j", hl.dsp.movewindow("d"))
-hl.bind(mod .. " + SHIFT + k", hl.dsp.movewindow("u"))
-hl.bind(mod .. " + SHIFT + l", hl.dsp.movewindow("r"))
+hl.bind(mod .. " + SHIFT + h", hl.dsp.window.move({ direction = "left" }))
+hl.bind(mod .. " + SHIFT + j", hl.dsp.window.move({ direction = "down" }))
+hl.bind(mod .. " + SHIFT + k", hl.dsp.window.move({ direction = "up" }))
+hl.bind(mod .. " + SHIFT + l", hl.dsp.window.move({ direction = "right" }))
 
 -- Workspaces 1..9
 for i = 1, 9 do
-    hl.bind(mod .. " + " .. i, hl.dsp.workspace(tostring(i)))
-    hl.bind(mod .. " + SHIFT + " .. i, hl.dsp.movetoworkspace(tostring(i)))
+    hl.bind(mod .. " + " .. i, hl.dsp.focus({ workspace = tostring(i) }))
+    hl.bind(mod .. " + SHIFT + " .. i, hl.dsp.window.move({ workspace = tostring(i) }))
 end
 
 -- Workspace 10
-hl.bind(mod .. " + 0", hl.dsp.workspace("10"))
-hl.bind(mod .. " + SHIFT + 0", hl.dsp.movetoworkspace("10"))
+hl.bind(mod .. " + 0", hl.dsp.focus({ workspace = "10" }))
+hl.bind(mod .. " + SHIFT + 0", hl.dsp.window.move({ workspace = "10" }))
 
 -- Special workspaces
-hl.bind(mod .. " + ALT + S", hl.dsp.togglespecialworkspace("magic"))
-hl.bind(mod .. " + SHIFT + S", hl.dsp.movetoworkspace("special:magic"))
-hl.bind(mod .. " + ALT + O", hl.dsp.togglespecialworkspace("obsidian"))
-hl.bind(mod .. " + ALT + T", hl.dsp.togglespecialworkspace("telegram"))
+hl.bind(mod .. " + ALT + S", hl.dsp.workspace.toggle_special("magic"))
+hl.bind(mod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }))
+hl.bind(mod .. " + ALT + O", hl.dsp.workspace.toggle_special("obsidian"))
+hl.bind(mod .. " + ALT + T", hl.dsp.workspace.toggle_special("telegram"))
 
 -- Mouse wheel workspace switch
-hl.bind(mod .. " + mouse_down", hl.dsp.workspace("e+1"))
-hl.bind(mod .. " + mouse_up", hl.dsp.workspace("e-1"))
+hl.bind(mod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
+hl.bind(mod .. " + mouse_up", hl.dsp.focus({ workspace = "e-1" }))
 
 -- Mouse drag / resize (replaces bindm = SUPER, mouse:272/273, ...)
 hl.bind(mod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })

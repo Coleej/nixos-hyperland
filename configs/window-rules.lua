@@ -4,11 +4,9 @@
 hl.window_rule({
     match = { initial_class = "obsidian" },
     workspace = "special:obsidian",
-    silent = true,
 })
 
 hl.window_rule({
     match = { initial_class = "org.telegram.desktop" },
     workspace = "special:telegram",
-    silent = true,
 })
