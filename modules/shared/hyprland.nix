@@ -24,7 +24,7 @@ in {
     useHomeManager = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "Use Home Manager for hyprland config files (hyprland.conf, hyprland-base.conf, hyprland-monitors.conf)";
+      description = "Use Home Manager for hyprland config files (hyprland.lua, autostart.lua, window-rules.lua, animations.lua, keybinds.lua, monitors.lua)";
     };
     monitorsFile = lib.mkOption {
       type = lib.types.nullOr lib.types.path;
@@ -162,17 +162,19 @@ in {
           chmod 755 ${userHome}/.config/hypr
 
           ${lib.optionalString (!cfg.useHomeManager) ''
-            ln -sf ${../../configs/hyprland-base.conf} ${userHome}/.config/hypr/hyprland-base.conf
+            ln -sf ${../../configs/hyprland.lua} ${userHome}/.config/hypr/hyprland.lua
+            ln -sf ${../../configs/autostart.lua} ${userHome}/.config/hypr/autostart.lua
+            ln -sf ${../../configs/window-rules.lua} ${userHome}/.config/hypr/window-rules.lua
+            ln -sf ${../../configs/animations.lua} ${userHome}/.config/hypr/animations.lua
+            ln -sf ${../../configs/keybinds.lua} ${userHome}/.config/hypr/keybinds.lua
 
             ${lib.optionalString (cfg.monitorsFile != null) ''
-              ln -sf ${cfg.monitorsFile} ${userHome}/.config/hypr/$(basename ${cfg.monitorsFile})
+              ln -sf ${cfg.monitorsFile} ${userHome}/.config/hypr/monitors.lua
             ''}
-
-            ln -sf ${../../configs/hyprland-default.conf} ${userHome}/.config/hypr/hyprland.conf
           ''}
 
           ${lib.optionalString cfg.useHomeManager ''
-            # skip — HM manages hyprland-base.conf, hyprland.conf, hyprland-monitors.conf
+            # skip — HM manages hyprland.lua, autostart.lua, window-rules.lua, animations.lua, keybinds.lua, monitors.lua
           ''}
 
           ${pkgs.gnused}/bin/sed "s#__WALLPAPER__#$WALLPAPER_PATH#g" ${
