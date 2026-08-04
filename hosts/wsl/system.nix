@@ -62,10 +62,8 @@
     # eurosym, grffile, fancyvrb. scheme-medium already covers the rest
     # (graphicx, caption, float, xcolor, geometry, amsmath, hyperref, ...).
     # Not texlive.combined.scheme-full, which is multiple GB.
-    (texlive.combine {
-      inherit
-        (texlive)
-        scheme-medium
+    (texliveMedium.withPackages (
+      ps: with ps; [
         tcolorbox
         pgf
         environ
@@ -82,8 +80,8 @@
         eurosym
         grffile
         fancyvrb
-        ;
-    })
+      ]
+    ))
   ];
 
   # Lets uv's own downloaded Python builds (and other prebuilt, dynamically
