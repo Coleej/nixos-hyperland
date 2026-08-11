@@ -97,6 +97,13 @@ in {
           imagemagick
           uv
           stdenv.cc.cc.lib
+
+          # render-markdown.nvim shells out to a plain `latex2text` executable
+          # to render latex blocks as unicode. pylatexenc is packaged with
+          # buildPythonPackage (library only, no bin/), so toPythonApplication
+          # is needed to actually expose its console_scripts (latex2text,
+          # etc.) on PATH.
+          (python3Packages.toPythonApplication python3Packages.pylatexenc)
         ]
       ))
       ++ cfg.extraPackages;

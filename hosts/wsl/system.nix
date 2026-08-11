@@ -47,12 +47,6 @@
     rustfmt
     gcc
 
-    # render-markdown.nvim shells out to a plain `latex2text` executable to
-    # render latex blocks as unicode. pylatexenc is packaged with
-    # buildPythonPackage (library only, no bin/), so toPythonApplication is
-    # needed to actually expose its console_scripts (latex2text, etc.) on PATH.
-    (python3Packages.toPythonApplication python3Packages.pylatexenc)
-
     # nbconvert's LaTeX exporter shells out to pandoc for markdown -> LaTeX
     # cell conversion (not just the xelatex backend below).
     pandoc
@@ -69,24 +63,25 @@
     # (graphicx, caption, float, xcolor, geometry, amsmath, hyperref, ...).
     # Not texlive.combined.scheme-full, which is multiple GB.
     (texliveMedium.withPackages (
-      ps: with ps; [
-        tcolorbox
-        pgf
-        environ
-        trimspaces
-        pdfcol
-        upquote
-        titling
-        enumitem
-        ulem
-        soul
-        rsfs
-        adjustbox
-        collectbox
-        eurosym
-        grffile
-        fancyvrb
-      ]
+      ps:
+        with ps; [
+          tcolorbox
+          pgf
+          environ
+          trimspaces
+          pdfcol
+          upquote
+          titling
+          enumitem
+          ulem
+          soul
+          rsfs
+          adjustbox
+          collectbox
+          eurosym
+          grffile
+          fancyvrb
+        ]
     ))
   ];
 
