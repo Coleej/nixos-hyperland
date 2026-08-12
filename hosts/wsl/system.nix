@@ -47,6 +47,8 @@
     rustfmt
     gcc
 
+    azure-cli
+
     # nbconvert's LaTeX exporter shells out to pandoc for markdown -> LaTeX
     # cell conversion (not just the xelatex backend below).
     pandoc
