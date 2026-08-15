@@ -39,8 +39,10 @@ in {
 
     systemd.user.services.waybar = {
       description = "Waybar status bar";
-      after = ["graphical-session.target"];
+      after = ["graphical-session.target" "hyperland-waybar-setup.service"];
+      requires = ["hyperland-waybar-setup.service"];
       wantedBy = ["graphical-session.target"];
+      path = with pkgs; [bash dunst playerctl jq curl];
       serviceConfig = {
         Type = "simple";
         ExecStart = "${pkgs.waybar}/bin/waybar --config ${userHome}/.config/waybar/config --style ${userHome}/.config/waybar/style.css";
@@ -71,7 +73,7 @@ in {
             ln -sf ${
               if cfg.stylePath != null
               then "${cfg.stylePath}"
-              else "${../../configs/waybar/style.css}"
+              else "${../../configs/waybar/cyberpunk.css}"
             } ${userHome}/.config/waybar/style.css
           ''}
 

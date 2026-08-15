@@ -78,7 +78,7 @@ in {
       force = true;
     };
     ".config/waybar/style.css" = {
-      source = self + /configs/waybar/style.css;
+      source = self + /configs/waybar/cyberpunk.css;
       force = true;
     };
     ".config/wofi/style.css" = {

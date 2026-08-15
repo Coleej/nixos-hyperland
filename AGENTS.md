@@ -57,8 +57,9 @@ hyperland/
 │   ├── wofi-style.css
 │   └── waybar/
 │       ├── config.json
-│       ├── style.css           # Active theme (currently cyberpunk)
-│       └── base.css, cyberpunk.css, catppuccin-*.css  # Selectable theme variants
+│       └── base.css, cyberpunk.css, catppuccin-*.css  # Theme variants; active theme selected via
+│                                                        # hyperland.waybar.stylePath in each host's
+│                                                        # system.nix (currently cyberpunk.css)
 ├── scripts/
 │   ├── hyprland/               # brightness.sh, show-keybindings.sh
 │   ├── waybar/                 # waybar-dunst.sh, waybar-mpris.sh, waybar-public-ip.sh

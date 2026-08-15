@@ -25,7 +25,7 @@
   hyperland.waybar = {
     enable = true;
     configPath = ../../configs/waybar/config.json;
-    stylePath = ../../configs/waybar/style.css;
+    stylePath = ../../configs/waybar/cyberpunk.css;
     scriptsDir = ../../scripts/waybar;
     useHomeManager = true;
   };

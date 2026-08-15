@@ -8,6 +8,8 @@
   "modules-right": [
     "pulseaudio",
     "network",
+    "custom/public-ip",
+    "custom/mpris",
     "cpu",
     "memory",
     "battery",
@@ -85,6 +87,20 @@
     "exec": "~/.config/waybar/scripts/waybar-dunst.sh",
     "interval": 5,
     "on-click": "dunstctl set-paused toggle",
+    "tooltip": true,
+    "format": "{}"
+  },
+  "custom/mpris": {
+    "return-type": "json",
+    "exec": "~/.config/waybar/scripts/waybar-mpris.sh",
+    "interval": 5,
+    "tooltip": true,
+    "format": "{}"
+  },
+  "custom/public-ip": {
+    "return-type": "json",
+    "exec": "~/.config/waybar/scripts/waybar-public-ip.sh",
+    "interval": 300,
     "tooltip": true,
     "format": "{}"
   }
