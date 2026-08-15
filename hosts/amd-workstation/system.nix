@@ -25,7 +25,13 @@
 
   hyperland.waybar = {
     enable = true;
-    configPath = ../../configs/waybar/config.json;
+    # amd-workstation has no internal battery; only an intermittent USB HID
+    # "corsair-void-10-battery" (wireless headset) device shows up in
+    # /sys/class/power_supply. Waybar's battery module throws an uncaught
+    # exception (crash-looping the whole bar) whenever that device
+    # disappears mid-scan, so the battery module is omitted here. See
+    # hosts/thinkpad/system.nix for the laptop config with battery enabled.
+    configPath = ../../configs/waybar/config-amd-workstation.json;
     stylePath = ../../configs/waybar/cyberpunk.css;
     scriptsDir = ../../scripts/waybar;
     useHomeManager = true;

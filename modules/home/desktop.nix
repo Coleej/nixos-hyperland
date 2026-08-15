@@ -14,6 +14,21 @@
     .${
       hostName
     } or (throw "No monitors.lua for host: ${hostName}");
+
+  # amd-workstation has no internal battery; only an intermittent USB HID
+  # "corsair-void-10-battery" (wireless headset) device shows up in
+  # /sys/class/power_supply. Waybar's battery module throws an uncaught
+  # exception (crash-looping the whole bar) whenever that device
+  # disappears mid-scan, so its config omits the battery module. thinkpad
+  # is a real laptop and keeps battery in its config.
+  waybarConfigFile =
+    {
+      thinkpad = self + /configs/waybar/config.json;
+      amd-workstation = self + /configs/waybar/config-amd-workstation.json;
+    }
+    .${
+      hostName
+    } or (throw "No waybar config.json for host: ${hostName}");
 in {
   gtk = {
     enable = true;
@@ -74,7 +89,7 @@ in {
       force = true;
     };
     ".config/waybar/config" = {
-      source = self + /configs/waybar/config.json;
+      source = waybarConfigFile;
       force = true;
     };
     ".config/waybar/style.css" = {
