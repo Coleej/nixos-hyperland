@@ -6,7 +6,7 @@
 }
 
 window#waybar {
-  height: 38px;
+  min-height: 38px;
 }
 
 .modules-left > widget,

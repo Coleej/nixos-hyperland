@@ -5,15 +5,14 @@
   self,
   hostName,
   ...
-}: let
+}:
+let
   monitorsFile =
     {
       thinkpad = self + /hosts/thinkpad/monitors.lua;
       amd-workstation = self + /hosts/amd-workstation/monitors.lua;
     }
-    .${
-      hostName
-    } or (throw "No monitors.lua for host: ${hostName}");
+    .${hostName} or (throw "No monitors.lua for host: ${hostName}");
 
   # amd-workstation has no internal battery; only an intermittent USB HID
   # "corsair-void-10-battery" (wireless headset) device shows up in
@@ -26,10 +25,9 @@
       thinkpad = self + /configs/waybar/config.json;
       amd-workstation = self + /configs/waybar/config-amd-workstation.json;
     }
-    .${
-      hostName
-    } or (throw "No waybar config.json for host: ${hostName}");
-in {
+    .${hostName} or (throw "No waybar config.json for host: ${hostName}");
+in
+{
   gtk = {
     enable = true;
     theme = {
@@ -93,7 +91,7 @@ in {
       force = true;
     };
     ".config/waybar/style.css" = {
-      source = self + /configs/waybar/cyberpunk.css;
+      source = self + /configs/waybar/default.css;
       force = true;
     };
     ".config/wofi/style.css" = {
