@@ -50,6 +50,12 @@
     enable = true;
   };
 
+  hyperland.android = {
+    enable = true;
+    studio.enable = true;
+    sdk.enable = true;
+  };
+
   hyperland.packages = {
     enable = true;
     base.enable = true;
@@ -88,6 +94,7 @@
     "flakes"
   ];
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.android_sdk.accept_license = true;
 
   programs.fish.enable = true;
 

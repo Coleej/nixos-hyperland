@@ -16,6 +16,7 @@ in {
     ./system.nix
     ./user.nix
     ./gaming.nix
+    ./android.nix
   ];
 
   config = lib.mkIf cfg.enable {
