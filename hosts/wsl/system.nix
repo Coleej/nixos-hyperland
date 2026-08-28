@@ -11,6 +11,7 @@
     enable = true;
     base.enable = true;
     dev.enable = true;
+    rust.enable = true;
   };
 
   wsl.enable = true;
@@ -40,11 +41,6 @@
   virtualisation.docker.enable = true;
 
   environment.systemPackages = with pkgs; [
-    rustc
-    cargo
-    rust-analyzer
-    clippy
-    rustfmt
     gcc
 
     azure-cli

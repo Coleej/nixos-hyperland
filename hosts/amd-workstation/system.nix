@@ -61,6 +61,7 @@
     base.enable = true;
     desktop.enable = true;
     dev.enable = true;
+    rust.enable = true;
   };
 
   boot.loader.grub = {

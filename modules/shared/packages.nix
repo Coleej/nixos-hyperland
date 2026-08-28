@@ -11,6 +11,7 @@ in {
     base.enable = lib.mkEnableOption "Common CLI utilities";
     desktop.enable = lib.mkEnableOption "Desktop helpers for Wayland sessions";
     dev.enable = lib.mkEnableOption "Developer toolchain";
+    rust.enable = lib.mkEnableOption "Rust toolchain (rustc, cargo, rustfmt, clippy, rust-analyzer)";
     extraPackages = lib.mkOption {
       type = with lib.types; listOf package;
       default = [];
@@ -104,6 +105,15 @@ in {
           # is needed to actually expose its console_scripts (latex2text,
           # etc.) on PATH.
           (python3Packages.toPythonApplication python3Packages.pylatexenc)
+        ]
+      ))
+      ++ (lib.optionals cfg.rust.enable (
+        with pkgs; [
+          rustc
+          cargo
+          rustfmt
+          clippy
+          rust-analyzer
         ]
       ))
       ++ cfg.extraPackages;
