@@ -15,6 +15,7 @@
     EDITOR = "nvim";
     VISUAL = "nvim";
     XDG_CONFIG_HOME = "\${HOME}/.config";
+    COLORTERM = "truecolor";
   };
 
   home.sessionPath = [
