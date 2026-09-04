@@ -23,6 +23,7 @@
       nixd
       nixfmt
       tre-command
+      opencode
     ]
     ++ [claudeCodePackage];
 }
