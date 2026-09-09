@@ -48,6 +48,8 @@ hyperland/
 │       ├── packages-wsl.nix    # Curated headless CLI/dev packages (no GUI)
 │       ├── secrets-wsl.nix     # sops wiring for WSL — only taskchampion_secret
 │       └── taskwarrior.nix     # Taskwarrior 3 + taskchampion sync (secret injected at activation)
+│       # wsl skips qmd-mcp.nix (no GPU passthrough) — its Claude Code qmd MCP server
+│       # runs natively on the Windows host instead, via Task Scheduler (outside Nix).
 ├── configs/                   # Dotfiles installed by modules/home/desktop.nix or the hyperland-setup service
 │   ├── hyprland-base.conf      # Base Hyprland config + keybindings
 │   ├── hyprland-default.conf
