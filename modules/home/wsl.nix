@@ -9,6 +9,7 @@
     ./secrets-wsl.nix
     ./taskwarrior.nix
     ./qmd.nix
+    ./qmd-reindex.nix
   ];
 
   programs.home-manager.enable = true;

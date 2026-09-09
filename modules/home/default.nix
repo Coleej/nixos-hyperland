@@ -8,7 +8,8 @@
     ./git.nix
     ./email.nix
     ./qmd.nix
-    ./qmd-server.nix
+    ./qmd-mcp.nix
+    ./qmd-reindex.nix
   ];
 
   programs.home-manager.enable = true;
