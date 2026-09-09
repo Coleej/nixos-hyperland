@@ -25,6 +25,10 @@
       url = "github:sadjow/claude-code-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    qmd = {
+      url = "github:tobi/qmd";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -36,6 +40,7 @@
     sops-nix,
     nixos-wsl,
     claude-code-nix,
+    qmd,
     ...
   }: let
     hosts = {
@@ -91,6 +96,7 @@
                   [
                     (hostData.homeModule or ./home.nix)
                     sops-nix.homeManagerModules.default
+                    qmd.homeModules.default
                   ]
                   ++ nixpkgs.lib.optional (!isWsl) hypr-binds.homeManagerModules.x86_64-linux.default;
                 _module.args = {

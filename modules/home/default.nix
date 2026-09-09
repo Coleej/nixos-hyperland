@@ -7,6 +7,8 @@
     ./secrets.nix
     ./git.nix
     ./email.nix
+    ./qmd.nix
+    ./qmd-server.nix
   ];
 
   programs.home-manager.enable = true;

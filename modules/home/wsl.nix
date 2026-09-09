@@ -8,6 +8,7 @@
     ./git.nix
     ./secrets-wsl.nix
     ./taskwarrior.nix
+    ./qmd.nix
   ];
 
   programs.home-manager.enable = true;
