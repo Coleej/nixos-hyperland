@@ -50,6 +50,11 @@ hyperland/
 │       └── taskwarrior.nix     # Taskwarrior 3 + taskchampion sync (secret injected at activation)
 │       # wsl skips qmd-mcp.nix (no GPU passthrough) — its Claude Code qmd MCP server
 │       # runs natively on the Windows host instead, via Task Scheduler (outside Nix).
+│       # Those Windows tasks launch via a wscript.exe .vbs wrapper (WshShell.Run with
+│       # windowStyle=0), not `powershell.exe -WindowStyle Hidden`: PowerShell/node.exe
+│       # are console-subsystem binaries that flash a window before hiding it — only
+│       # wscript.exe suppresses the window at process-creation time. Scripts live in
+│       # %LOCALAPPDATA%\qmd\ on the Windows host.
 ├── configs/                   # Dotfiles installed by modules/home/desktop.nix or the hyperland-setup service
 │   ├── hyprland-base.conf      # Base Hyprland config + keybindings
 │   ├── hyprland-default.conf
