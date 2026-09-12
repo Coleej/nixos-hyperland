@@ -38,5 +38,6 @@
     imagemagick
     protonmail-bridge-gui
     obsidian
+    sparrow
   ];
 }
