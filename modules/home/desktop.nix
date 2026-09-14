@@ -112,6 +112,12 @@ in {
       force = true;
     };
     ".config/alacritty/alacritty.toml".text = ''
+      ${lib.optionalString (shellName == "dankshell") ''
+        # DMS (enableDynamicTheming) regenerates this file live whenever the
+        # system theme/wallpaper changes; Alacritty hot-reloads imports.
+        [general]
+        import = ["${config.home.homeDirectory}/.config/alacritty/dank-theme.toml"]
+      ''}
       [font]
       size = 12
 
