@@ -11,9 +11,9 @@
     ../../modules/shared
   ];
 
-  hyperland.enable = true;
+  hyprspace.enable = true;
 
-  hyperland.hyprland = {
+  hyprspace.hyprland = {
     monitorsFile = ./monitors.lua;
     hyprpaperTemplate = ../../configs/hyprpaper-default.conf;
     hyprlockTemplate = ../../configs/hyprlock-default.conf;
@@ -23,8 +23,9 @@
     amd.enable = true;
   };
 
-  hyperland.waybar = {
-    enable = true;
+  # Shell settings for the "waybar" stack — re-activated automatically when
+  # hyprspace.shell = "waybar" (switch lives in modules/shared/default.nix).
+  hyprspace.waybar = {
     # amd-workstation has no internal battery; only an intermittent USB HID
     # "corsair-void-10-battery" (wireless headset) device shows up in
     # /sys/class/power_supply. Waybar's battery module throws an uncaught
@@ -37,7 +38,7 @@
     useHomeManager = true;
   };
 
-  hyperland.services = {
+  hyprspace.services = {
     enable = true;
     openssh.enable = true;
   };
@@ -46,17 +47,22 @@
     enable = true;
   };
 
-  hyperland.gaming = {
+  # DMS control-center power-profile widget (ppd). Only enabled on this host —
+  # thinkpad uses TLP instead; running both would make them fight over the
+  # same sysfs governor/turbo knobs.
+  services.power-profiles-daemon.enable = true;
+
+  hyprspace.gaming = {
     enable = true;
   };
 
-  hyperland.android = {
+  hyprspace.android = {
     enable = true;
     studio.enable = true;
     sdk.enable = true;
   };
 
-  hyperland.packages = {
+  hyprspace.packages = {
     enable = true;
     base.enable = true;
     desktop.enable = true;

@@ -4,9 +4,9 @@
   pkgs,
   ...
 }: let
-  cfg = config.hyperland.gaming;
+  cfg = config.hyprspace.gaming;
 in {
-  options.hyperland.gaming = {
+  options.hyprspace.gaming = {
     enable = lib.mkEnableOption "Gaming setup (Steam, Gamescope, vulkan-tools)";
   };
 

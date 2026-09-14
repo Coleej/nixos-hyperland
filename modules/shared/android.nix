@@ -4,7 +4,7 @@
   config,
   ...
 }: let
-  cfg = config.hyperland.android;
+  cfg = config.hyprspace.android;
 
   # Declarative SDK for CLI Gradle builds. Wear OS AVD system images are NOT
   # provisioned here — install those through Android Studio's SDK Manager
@@ -19,7 +19,7 @@
     includeEmulator = true;
   };
 in {
-  options.hyperland.android = {
+  options.hyprspace.android = {
     enable = lib.mkEnableOption "Android/Wear OS development tooling (adb, KVM access)";
     studio.enable = lib.mkEnableOption "Android Studio (AVD/SDK manager GUI)";
     sdk.enable = lib.mkEnableOption "Declarative Android SDK via androidenv";
@@ -28,7 +28,7 @@ in {
   config = lib.mkIf cfg.enable {
     # programs.adb was removed upstream (systemd 258 handles Android uaccess
     # rules automatically); pkgs.android-tools below provides adb itself.
-    users.users."${config.hyperland.user.name}".extraGroups = ["kvm"];
+    users.users."${config.hyprspace.user.name}".extraGroups = ["kvm"];
 
     environment.systemPackages =
       [

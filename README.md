@@ -1,4 +1,4 @@
-# NixOS Hyperland Configuration
+# NixOS Hyprspace Configuration
 
 A flake-based NixOS system configuration with **Hyprland** (Wayland compositor),
 **Home Manager** for user-level dotfiles and packages, **sops-nix** for encrypted secrets, and a
@@ -78,7 +78,7 @@ Then copy the generated `hardware-configuration.nix` into this repo:
 
 ```bash
 # On the live system, clone or copy your config into /mnt/etc/nixos/
-cp -r /path/to/hyperland /mnt/etc/nixos/
+cp -r /path/to/hyprspace /mnt/etc/nixos/
 ```
 
 ### 1.4 Edit the Configuration
@@ -141,7 +141,7 @@ home-manager switch --flake .#thinkpad
 ### Rebuild the system
 
 ```bash
-cd ~/Projects/Nix/hyperland
+cd ~/Projects/Nix/hyprspace
 sudo nixos-rebuild switch --flake .#thinkpad
 ```
 
@@ -170,7 +170,7 @@ nix fmt
 ## 3. Repository Structure
 
 ```
-hyperland/
+hyprspace/
 ├── flake.nix                       # Flake definition — inputs (incl. hypr-binds, sops-nix), outputs, hosts
 ├── flake.lock                      # Locked versions of all flake inputs
 │
@@ -180,15 +180,15 @@ hyperland/
 │   │   ├── hardware-configuration.nix  # Kernel modules, filesystem layout (from nixos-generate-config)
 │   │   └── hyprland-monitors.conf  # Per-host monitor setup (EDIT THIS)
 │   ├── amd-workstation/
-│   │   ├── system.nix              # Same shape, plus hyperland.hyprland.amd.enable + hyperland.gaming.enable
+│   │   ├── system.nix              # Same shape, plus hyprspace.hyprland.amd.enable + hyprspace.gaming.enable
 │   │   ├── hardware-configuration.nix
 │   │   └── hyprland-monitors.conf
 │   └── wsl/
 │       └── system.nix              # Headless NixOS-WSL host (no hardware-configuration.nix / bootloader / kernel)
 │
 ├── modules/
-│   ├── shared/                     # Reusable NixOS module library — options under `hyperland.*`
-│   │   ├── default.nix             # hyperland.enable gate — wires default sub-options
+│   ├── shared/                     # Reusable NixOS module library — options under `hyprspace.*`
+│   │   ├── default.nix             # hyprspace.enable gate — wires default sub-options
 │   │   ├── user.nix                # User creation and group management
 │   │   ├── desktop.nix             # Display manager, portals, fonts, session vars
 │   │   ├── hyprland.nix            # Hyprland + hyprpaper/hyprlock/hypridle
@@ -212,7 +212,7 @@ hyperland/
 │       ├── secrets-wsl.nix         # sops wiring for WSL — only taskchampion_secret
 │       └── taskwarrior.nix         # Taskwarrior 3 + Taskchampion sync (secret injected at activation)
 │
-├── configs/                        # Dotfile configs installed by modules/home/desktop.nix or the hyperland-setup service
+├── configs/                        # Dotfile configs installed by modules/home/desktop.nix or the hyprspace-setup service
 │   ├── hyprland-base.conf          # Hyprland base config (keybindings, animations, env, Obsidian special workspace)
 │   ├── hyprland-default.conf       # Sources base + local config
 │   ├── hyprpaper-default.conf      # Hyprpaper template — __WALLPAPER__ substituted at activation
@@ -264,8 +264,8 @@ There are **two module systems** in this repo:
 
 | Layer | Tool | Configured in | How it works |
 |---|---|---|---|
-| **NixOS** | `nixos-rebuild` | `hosts/*/system.nix` → `modules/shared/` | Manages system-level things: kernel, services, packages. Options live under `hyperland.<name>` and each submodule has its own `enable` toggle. |
-| **Home Manager** | `home-manager switch` | `home.nix` → `modules/home/` | Manages user-level things: dotfiles, user packages, shell config, secrets. Uses plain `programs.*`/`home.*` — no `hyperland.*` namespace. |
+| **NixOS** | `nixos-rebuild` | `hosts/*/system.nix` → `modules/shared/` | Manages system-level things: kernel, services, packages. Options live under `hyprspace.<name>` and each submodule has its own `enable` toggle. |
+| **Home Manager** | `home-manager switch` | `home.nix` → `modules/home/` | Manages user-level things: dotfiles, user packages, shell config, secrets. Uses plain `programs.*`/`home.*` — no `hyprspace.*` namespace. |
 
 Both layers are composed together in the flake. Home Manager runs as a NixOS module
 under the hood, but it is evaluated independently for faster iteration.
@@ -273,7 +273,7 @@ under the hood, but it is evaluated independently for faster iteration.
 ### 4.3 Shared Modules
 
 The `modules/shared/` directory contains **NixOS modules** imported by `hosts/<host>/system.nix`.
-They expose options under the `hyperland.` prefix (e.g., `hyperland.hyprland`).
+They expose options under the `hyprspace.` prefix (e.g., `hyprspace.hyprland`).
 Each module can be enabled or disabled independently, and hosts can override any option.
 
 The dependency chain is:
@@ -281,9 +281,9 @@ The dependency chain is:
 ```
 flake.nix  (hosts: thinkpad, amd-workstation)
   └── makeHostConfig → nixosConfigurations.<host>
-        ├── hosts/<host>/system.nix        ← host-specific config, sets hyperland.* options
+        ├── hosts/<host>/system.nix        ← host-specific config, sets hyprspace.* options
         │     └── imports modules/shared
-        │           ├── default.nix        → hyperland.enable gate + default sub-option wiring
+        │           ├── default.nix        → hyprspace.enable gate + default sub-option wiring
         │           ├── user.nix           → sets up user account + groups
         │           ├── desktop.nix        → greetd+tuigreet, portals, fonts, env vars
         │           ├── hyprland.nix       → Hyprland WM + systemd user services
@@ -305,19 +305,19 @@ flake.nix  (hosts: thinkpad, amd-workstation)
 
 ### 4.4 Config File Installation
 
-Both current hosts set `hyperland.hyprland.useHomeManager = true` and
-`hyperland.waybar.useHomeManager = true`, which splits config installation two ways:
+Both current hosts set `hyprspace.hyprland.useHomeManager = true` and
+`hyprspace.waybar.useHomeManager = true`, which splits config installation two ways:
 
 - **Static files with no substitution** — `hyprland-base.conf`, `hyprland.conf`,
   `hyprland-monitors.conf`, waybar `config`/`style.css`, `wofi/style.css` — are installed directly
   by Home Manager's `home.file` in `modules/home/desktop.nix` (`force = true` so it overwrites
   whatever a previous non-HM activation left behind).
 - **Files needing the wallpaper path substituted in** — `hyprpaper.conf`, `hyprlock.conf` — are
-  generated at activation time by the `hyperland-setup` `systemd.user.service`
+  generated at activation time by the `hyprspace-setup` `systemd.user.service`
   (`Type = "oneshot"`, `RemainAfterExit = true`, in `modules/shared/hyprland.nix`), which `sed`s
   `__WALLPAPER__` in the configured template into a real path. `hypridle.conf` and the Hyprland
   helper scripts are also installed by this service regardless of `useHomeManager`, and the
-  equivalent `hyperland-waybar-setup` service always installs the waybar scripts directory.
+  equivalent `hyprspace-waybar-setup` service always installs the waybar scripts directory.
 - If a host sets `useHomeManager = false` instead, the oneshot services fall back to symlinking
   the Hyprland/waybar config files themselves rather than deferring to Home Manager. Neither
   current host uses this path.
@@ -333,31 +333,31 @@ This split exists because template substitution (wallpaper path) can't happen th
 
 Sets up Hyprland and its companion tools. Options:
 
-- `hyperland.hyprland.useHomeManager` — defer static config file installs to Home Manager (both hosts set this `true`; see [§4.4](#44-config-file-installation))
-- `hyperland.hyprland.monitorsFile` — path to this host's monitor config (`hosts/<host>/hyprland-monitors.conf`)
-- `hyperland.hyprland.wallpaper` — override the default wallpaper path
-- `hyperland.hyprland.hyprpaperTemplate` / `hyprlockTemplate` — templates with a `__WALLPAPER__` placeholder
-- `hyperland.hyprland.hypridleConfig` — path to hypridle.conf (idle → dpms off)
-- `hyperland.hyprland.scriptsDir` — directory of Hyprland helper scripts to install
-- `hyperland.hyprland.amd.enable` — set AMD Vulkan/Mesa env vars (used by `amd-workstation`)
+- `hyprspace.hyprland.useHomeManager` — defer static config file installs to Home Manager (both hosts set this `true`; see [§4.4](#44-config-file-installation))
+- `hyprspace.hyprland.monitorsFile` — path to this host's monitor config (`hosts/<host>/hyprland-monitors.conf`)
+- `hyprspace.hyprland.wallpaper` — override the default wallpaper path
+- `hyprspace.hyprland.hyprpaperTemplate` / `hyprlockTemplate` — templates with a `__WALLPAPER__` placeholder
+- `hyprspace.hyprland.hypridleConfig` — path to hypridle.conf (idle → dpms off)
+- `hyprspace.hyprland.scriptsDir` — directory of Hyprland helper scripts to install
+- `hyprspace.hyprland.amd.enable` — set AMD Vulkan/Mesa env vars (used by `amd-workstation`)
 
 Creates systemd user services:
 - `hyprvibe-hyprpaper` — wallpaper daemon (waits for the Hyprland socket to appear)
 - `hypridle` — idle detection
 - `hyprlock` — screen lock on sleep
-- `hyperland-setup` — generates `hyprpaper.conf`/`hyprlock.conf` from templates and installs
+- `hyprspace-setup` — generates `hyprpaper.conf`/`hyprlock.conf` from templates and installs
   `hypridle.conf` + helper scripts at every activation
 
 ### `modules/shared/waybar.nix` (NixOS)
 
 Sets up Waybar with a systemd user service. Options:
 
-- `hyperland.waybar.useHomeManager` — defer static config file installs to Home Manager (both hosts set this `true`)
-- `hyperland.waybar.configPath` — path to waybar JSON config
-- `hyperland.waybar.stylePath` — path to CSS
-- `hyperland.waybar.scriptsDir` — directory of shell scripts for custom waybar modules
+- `hyprspace.waybar.useHomeManager` — defer static config file installs to Home Manager (both hosts set this `true`)
+- `hyprspace.waybar.configPath` — path to waybar JSON config
+- `hyprspace.waybar.stylePath` — path to CSS
+- `hyprspace.waybar.scriptsDir` — directory of shell scripts for custom waybar modules
 
-Also creates `hyperland-waybar-setup`, which always installs the waybar scripts directory
+Also creates `hyprspace-waybar-setup`, which always installs the waybar scripts directory
 (and `rofi-brightness.sh` into `~/.local/bin`) regardless of `useHomeManager`.
 
 ### `modules/home/shell.nix` (Home Manager)
@@ -377,27 +377,27 @@ per-host `hyprland-monitors.conf` via an attrset keyed on the `hostName` module 
 
 Creates the primary user account. Options:
 
-- `hyperland.user.name` — username
-- `hyperland.user.group` — primary group
-- `hyperland.user.home` — home directory path
-- `hyperland.user.extraGroups` — additional groups (e.g., `["libvirtd" "docker"]`)
-- `hyperland.user.linger` — keep user services running while logged out (default `true`)
+- `hyprspace.user.name` — username
+- `hyprspace.user.group` — primary group
+- `hyprspace.user.home` — home directory path
+- `hyprspace.user.extraGroups` — additional groups (e.g., `["libvirtd" "docker"]`)
+- `hyprspace.user.linger` — keep user services running while logged out (default `true`)
 
 ### `modules/shared/packages.nix` (NixOS)
 
 Shared package groups. Enable any combination:
 
-- `hyperland.packages.base.enable` — CLI utilities (htop, btop, bottom, ripgrep, bat, fd, jq...)
-- `hyperland.packages.desktop.enable` — Wayland helpers (wl-clipboard, brightnessctl, playerctl...)
-- `hyperland.packages.dev.enable` — Dev toolchain (git, gcc, cmake, nodejs...)
-- `hyperland.packages.extraPackages` — extra packages appended on top
+- `hyprspace.packages.base.enable` — CLI utilities (htop, btop, bottom, ripgrep, bat, fd, jq...)
+- `hyprspace.packages.desktop.enable` — Wayland helpers (wl-clipboard, brightnessctl, playerctl...)
+- `hyprspace.packages.dev.enable` — Dev toolchain (git, gcc, cmake, nodejs...)
+- `hyprspace.packages.extraPackages` — extra packages appended on top
 
 ### `modules/shared/services.nix` (NixOS)
 
 System services. Options:
 
-- `hyperland.services.openssh.enable` — OpenSSH server
-- `hyperland.services.tlp.enable` — TLP power management (laptops)
+- `hyprspace.services.openssh.enable` — OpenSSH server
+- `hyprspace.services.tlp.enable` — TLP power management (laptops)
 
 Always-on when the module is enabled: PipeWire (+ ALSA/PulseAudio/JACK compat), flatpak, polkit,
 rtkit, udisks2/gvfs/tumbler, blueman, avahi (mDNS), gnome-keyring (with PAM auto-unlock for greetd,
@@ -405,13 +405,13 @@ login, and hyprlock), and Evolution.
 
 ### `modules/shared/gaming.nix` (NixOS)
 
-`hyperland.gaming.enable` — Steam (+ Gamescope session), gamemode, vulkan-tools, mangohud, and the
+`hyprspace.gaming.enable` — Steam (+ Gamescope session), gamemode, vulkan-tools, mangohud, and the
 firewall ports/interfaces Steam remote play/in-home streaming needs. Enabled on `amd-workstation` only.
 
 ### `modules/shared/desktop.nix` (NixOS)
 
 Desktop environment basics — greetd+tuigreet login, portals, font packages, Wayland session env vars.
-Most options here are always-on for this config; `hyperland.desktop.fonts.enable` gates font installs.
+Most options here are always-on for this config; `hyprspace.desktop.fonts.enable` gates font installs.
 
 ### `modules/home/secrets.nix` (Home Manager)
 
@@ -446,7 +446,7 @@ GTK theme is **Adwaita-dark** (`gnome-themes-extra`, set via Home Manager's `gtk
 `tokyonight-gtk-theme` package is installed system-wide (`hosts/<host>/system.nix` fonts.packages)
 but not currently selected as the active GTK theme. Waybar uses the **cyberpunk** CSS theme
 (`configs/waybar/style.css`); alternate variants (`base.css`, `catppuccin-{frappe,latte,macchiato,mocha}.css`)
-live alongside it in `configs/waybar/` and can be swapped in via `hyperland.waybar.stylePath`.
+live alongside it in `configs/waybar/` and can be swapped in via `hyprspace.waybar.stylePath`.
 Installed fonts include FiraCode Nerd Font, Hack Nerd Font, Noto (+ color emoji), Ubuntu, Font
 Awesome, Liberation.
 
@@ -487,7 +487,7 @@ Awesome, Liberation.
 ## 7. Adding a New Host
 
 Two hosts exist today: `thinkpad` and `amd-workstation` (the latter also enables
-`hyperland.hyprland.amd.enable` and `hyperland.gaming.enable`). To add another:
+`hyprspace.hyprland.amd.enable` and `hyprspace.gaming.enable`). To add another:
 
 ### Step 1: Add the host entry in `flake.nix`
 
@@ -518,9 +518,9 @@ cp hosts/thinkpad/hyprland-monitors.conf hosts/workstation/
 ### Step 3: Edit `hosts/workstation/system.nix`
 
 Copy from `hosts/thinkpad/system.nix` and update:
-- `hyperland.hyprland.monitorsFile` — point to `./hyprland-monitors.conf`
+- `hyprspace.hyprland.monitorsFile` — point to `./hyprland-monitors.conf`
 - `networking.hostName` — set the hostname
-- `hyperland.user` — user info
+- `hyprspace.user` — user info
 - `boot.loader.grub.device` — correct boot disk
 
 ### Step 4: Edit the monitor config
@@ -558,7 +558,7 @@ because sops needs the age key under `/home/cody/.config/…`, but `/home/cody` 
 the first switch creates the `cody` user (the current instance runs as the default `nixos` user):
 
 1. **Get the flake onto the WSL Linux filesystem.** Clone/copy this repo into the WSL instance's
-   ext4 filesystem (e.g. `~/hyperland` or `/etc/nixos`), **not** under `/mnt/c/...` — Windows
+   ext4 filesystem (e.g. `~/hyprspace` or `/etc/nixos`), **not** under `/mnt/c/...` — Windows
    mounts have broken permissions and poor performance.
 
 2. **Phase 1 — bring up the box without secrets.** Temporarily comment out **both**
@@ -597,7 +597,7 @@ the first switch creates the `cody` user (the current instance runs as the defau
 The **rule of thumb**: put packages in `home.packages` unless they must be available at boot
 or are needed by system services.
 
-| Category | `home.packages` | `hyperland.packages` / `environment.systemPackages` |
+| Category | `home.packages` | `hyprspace.packages` / `environment.systemPackages` |
 |---|---|---|
 | CLI tools you use daily | ✅ | |
 | Editors, shells | ✅ | |
@@ -616,7 +616,7 @@ or are needed by system services.
 ### Add a package to the system
 Edit `hosts/thinkpad/system.nix`:
 ```nix
-hyperland.packages = {
+hyprspace.packages = {
   enable = true;
   base.enable = true;
   desktop.enable = true;
@@ -638,7 +638,7 @@ home.packages = with pkgs; [
 ### Change the wallpaper
 Edit `hosts/thinkpad/system.nix`:
 ```nix
-hyperland.hyprland.wallpaper = /path/to/your/wallpaper.jpg;
+hyprspace.hyprland.wallpaper = /path/to/your/wallpaper.jpg;
 ```
 
 ### Add a waybar script
@@ -655,7 +655,7 @@ hyperland.hyprland.wallpaper = /path/to/your/wallpaper.jpg;
 3. Add `custom/my_script` to a module list in `configs/waybar/config.json`
 
 ### Switch the waybar theme
-Point `hyperland.waybar.stylePath` at one of the other CSS files in `configs/waybar/`
+Point `hyprspace.waybar.stylePath` at one of the other CSS files in `configs/waybar/`
 (`base.css`, `cyberpunk.css`, `catppuccin-frappe.css`, `catppuccin-latte.css`,
 `catppuccin-macchiato.css`, `catppuccin-mocha.css`) in `hosts/<host>/system.nix`.
 
@@ -669,12 +669,12 @@ windowrule = workspace special:obsidian silent, match:initial_class obsidian
 ### Enable SSH server
 Already enabled in `hosts/thinkpad/system.nix`. To disable:
 ```nix
-hyperland.services.openssh.enable = false;
+hyprspace.services.openssh.enable = false;
 ```
 
 ### Switch to a different kernel
 ```nix
-hyperland.system.kernelPackages = pkgs.linuxPackages_latest;
+hyprspace.system.kernelPackages = pkgs.linuxPackages_latest;
 # or null for default, or pkgs.linuxPackages_hardened, etc.
 ```
 

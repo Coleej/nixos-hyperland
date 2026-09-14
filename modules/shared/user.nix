@@ -5,7 +5,7 @@
   hostUser,
   ...
 }: let
-  cfg = config.hyperland.user;
+  cfg = config.hyprspace.user;
   userSubmodule = {...}: {
     options = {
       name = lib.mkOption {
@@ -25,7 +25,7 @@
       };
       description = lib.mkOption {
         type = lib.types.str;
-        default = "Hyperland User";
+        default = "Hyprspace User";
         description = "GECOS/description for the primary user.";
       };
       linger = lib.mkOption {
@@ -36,7 +36,7 @@
       extraGroups = lib.mkOption {
         type = lib.types.listOf lib.types.str;
         default = [];
-        description = "Additional groups to add on top of hyperland base groups.";
+        description = "Additional groups to add on top of hyprspace base groups.";
       };
       icon = lib.mkOption {
         type = lib.types.nullOr lib.types.path;
@@ -46,7 +46,7 @@
     };
   };
 in {
-  options.hyperland.user = lib.mkOption {
+  options.hyprspace.user = lib.mkOption {
     type = lib.types.either lib.types.str (lib.types.submodule userSubmodule);
     default = hostUser;
     description = "Primary user (string short-form or attribute set).";
@@ -61,7 +61,7 @@ in {
         name = value.name;
         group = value.group or "users";
         home = value.home or "/home/${value.name}";
-        description = value.description or "Hyperland User";
+        description = value.description or "Hyprspace User";
         linger = value.linger or true;
         extraGroups = value.extraGroups or [];
         icon = value.icon or null;
@@ -85,7 +85,7 @@ in {
     users.users."${cfg.name}" = {
       isNormalUser = true;
       shell = pkgs.fish;
-      description = cfg.description or "Hyperland User";
+      description = cfg.description or "Hyprspace User";
       linger = cfg.linger or true;
       extraGroups = finalGroups;
       group = cfg.group;
@@ -93,7 +93,7 @@ in {
     };
 
     system.activationScripts.setUserIcon = lib.mkIf (cfg.icon != null) ''
-      echo "[hyperland][user] setting profile picture for ${cfg.name}..."
+      echo "[hyprspace][user] setting profile picture for ${cfg.name}..."
       if [ -f "${cfg.icon}" ]; then
         mkdir -p "${cfg.home}"
         cp -f "${cfg.icon}" "${cfg.home}/.face" || true

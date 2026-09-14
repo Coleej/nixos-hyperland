@@ -4,15 +4,17 @@
   lib,
   self,
   hostName,
+  osConfig ? {},
   ...
-}:
-let
+}: let
   monitorsFile =
     {
       thinkpad = self + /hosts/thinkpad/monitors.lua;
       amd-workstation = self + /hosts/amd-workstation/monitors.lua;
     }
-    .${hostName} or (throw "No monitors.lua for host: ${hostName}");
+    .${
+      hostName
+    } or (throw "No monitors.lua for host: ${hostName}");
 
   # amd-workstation has no internal battery; only an intermittent USB HID
   # "corsair-void-10-battery" (wireless headset) device shows up in
@@ -25,9 +27,14 @@ let
       thinkpad = self + /configs/waybar/config.json;
       amd-workstation = self + /configs/waybar/config-amd-workstation.json;
     }
-    .${hostName} or (throw "No waybar config.json for host: ${hostName}");
-in
-{
+    .${
+      hostName
+    } or (throw "No waybar config.json for host: ${hostName}");
+
+  # Active desktop shell stack from the NixOS-side switch. Read by the Lua
+  # Hyprland config via ~/.config/hypr/shell.lua. "waybar" when unset.
+  shellName = osConfig.hyprspace.shell or "waybar";
+in {
   gtk = {
     enable = true;
     theme = {
@@ -45,7 +52,8 @@ in
   };
 
   programs.wofi = {
-    enable = true;
+    # DMS spotlight replaces wofi in the "dankshell" stack.
+    enable = shellName != "dankshell";
     settings = {
       allow_markup = true;
       insensitive = true;
@@ -86,6 +94,11 @@ in
       source = monitorsFile;
       force = true;
     };
+    # Single source of truth for the active shell stack inside the Lua
+    # Hyprland config (keybinds.lua / autostart.lua / hyprland.lua).
+    ".config/hypr/shell.lua".text = ''
+      return "${shellName}"
+    '';
     ".config/waybar/config" = {
       source = waybarConfigFile;
       force = true;

@@ -4,9 +4,9 @@
   config,
   ...
 }: let
-  cfg = config.hyperland.desktop;
+  cfg = config.hyprspace.desktop;
 in {
-  options.hyperland.desktop = {
+  options.hyprspace.desktop = {
     enable = lib.mkEnableOption "Shared desktop (Wayland env, portals, fonts, GTK/Qt)";
     fonts.enable = lib.mkEnableOption "Install recommended Nerd/base fonts";
   };

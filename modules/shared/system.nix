@@ -4,9 +4,9 @@
   config,
   ...
 }: let
-  cfg = config.hyperland.system;
+  cfg = config.hyprspace.system;
 in {
-  options.hyperland.system = {
+  options.hyprspace.system = {
     enable = lib.mkEnableOption "Enable shared system/kernel performance settings";
     kernelPackages = lib.mkOption {
       type = lib.types.nullOr lib.types.unspecified;

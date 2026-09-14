@@ -3,6 +3,7 @@
     ./packages.nix
     ./shell.nix
     ./desktop.nix
+    ./dankshell.nix
     ./services.nix
     ./secrets.nix
     ./git.nix

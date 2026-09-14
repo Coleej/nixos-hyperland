@@ -11,9 +11,9 @@
     ../../modules/shared
   ];
 
-  hyperland.enable = true;
+  hyprspace.enable = true;
 
-  hyperland.hyprland = {
+  hyprspace.hyprland = {
     monitorsFile = ./monitors.lua;
     hyprpaperTemplate = ../../configs/hyprpaper-default.conf;
     hyprlockTemplate = ../../configs/hyprlock-default.conf;
@@ -22,15 +22,16 @@
     useHomeManager = true;
   };
 
-  hyperland.waybar = {
-    enable = true;
+  # Shell settings for the "waybar" stack — re-activated automatically when
+  # hyprspace.shell = "waybar" (switch lives in modules/shared/default.nix).
+  hyprspace.waybar = {
     configPath = ../../configs/waybar/config.json;
     stylePath = ../../configs/waybar/cyberpunk.css;
     scriptsDir = ../../scripts/waybar;
     useHomeManager = true;
   };
 
-  hyperland.services = {
+  hyprspace.services = {
     enable = true;
     openssh.enable = true;
     tlp.enable = true;
@@ -38,13 +39,13 @@
 
   services.tailscale.enable = true;
 
-  hyperland.android = {
+  hyprspace.android = {
     enable = true;
     studio.enable = true;
     sdk.enable = true;
   };
 
-  hyperland.packages = {
+  hyprspace.packages = {
     enable = true;
     base.enable = true;
     desktop.enable = true;

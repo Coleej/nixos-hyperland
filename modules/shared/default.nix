@@ -3,9 +3,22 @@
   config,
   ...
 }: let
-  cfg = config.hyperland;
+  cfg = config.hyprspace;
 in {
-  options.hyperland.enable = lib.mkEnableOption "Enable the Hyperland desktop experience";
+  options.hyprspace = {
+    enable = lib.mkEnableOption "Enable the Hyprspace desktop experience";
+    shell = lib.mkOption {
+      type = lib.types.enum [
+        "waybar"
+        "dankshell"
+      ];
+      default = "waybar";
+      description = ''
+        Desktop shell stack: "waybar" (waybar + wofi + hyprpaper/hyprlock/hypridle + dunst)
+        or "dankshell" (DankMaterialShell). One-line switch for both desktop hosts.
+      '';
+    };
+  };
 
   imports = [
     ./packages.nix
@@ -17,22 +30,27 @@ in {
     ./user.nix
     ./gaming.nix
     ./android.nix
+    ./dankshell.nix
   ];
 
   config = lib.mkIf cfg.enable {
     documentation.man.enable = false;
-    hyperland.desktop = {
+    hyprspace.desktop = {
       enable = true;
       fonts.enable = true;
     };
-    hyperland.hyprland.enable = true;
-    hyperland.waybar.enable = true;
-    hyperland.services = {
+    # THE shell switch — flip to "waybar" to restore the waybar/wofi/hypr*
+    # stack on every desktop host (per-host override possible via mkForce).
+    hyprspace.shell = "dankshell";
+    hyprspace.hyprland.enable = true;
+    hyprspace.waybar.enable = lib.mkDefault (cfg.shell == "waybar");
+    hyprspace.dankshell.enable = lib.mkDefault (cfg.shell == "dankshell");
+    hyprspace.services = {
       enable = true;
       openssh.enable = true;
     };
-    hyperland.system.enable = true;
-    hyperland.packages = {
+    hyprspace.system.enable = true;
+    hyprspace.packages = {
       enable = true;
       base.enable = true;
       desktop.enable = true;

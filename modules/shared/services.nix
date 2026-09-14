@@ -4,9 +4,9 @@
   pkgs,
   ...
 }: let
-  cfg = config.hyperland.services;
+  cfg = config.hyprspace.services;
 in {
-  options.hyperland.services = {
+  options.hyprspace.services = {
     enable = lib.mkEnableOption "Shared baseline services (pipewire, flatpak, polkit, sudo)";
     openssh.enable = lib.mkEnableOption "OpenSSH server";
     tlp.enable = lib.mkEnableOption "TLP power management (recommended for laptops)";

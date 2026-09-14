@@ -7,7 +7,7 @@
   # packages.nix directly for the shared dev toolchain (gnumake, cmake, etc.).
   imports = [../../modules/shared/packages.nix];
 
-  hyperland.packages = {
+  hyprspace.packages = {
     enable = true;
     base.enable = true;
     dev.enable = true;

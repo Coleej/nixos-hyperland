@@ -29,6 +29,10 @@
       url = "github:tobi/qmd";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    dms = {
+      url = "github:AvengeMedia/DankMaterialShell/stable";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -41,6 +45,7 @@
     nixos-wsl,
     claude-code-nix,
     qmd,
+    dms,
     ...
   }: let
     hosts = {
@@ -98,7 +103,8 @@
                     sops-nix.homeManagerModules.default
                     qmd.homeModules.default
                   ]
-                  ++ nixpkgs.lib.optional (!isWsl) hypr-binds.homeManagerModules.x86_64-linux.default;
+                  ++ nixpkgs.lib.optional (!isWsl) hypr-binds.homeManagerModules.x86_64-linux.default
+                  ++ nixpkgs.lib.optional (!isWsl) dms.homeModules.dank-material-shell;
                 _module.args = {
                   inherit self;
                   hostName = hostName;
@@ -118,7 +124,7 @@
     formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.alejandra;
 
     nixosModules = {
-      hyperland = import ./modules/shared;
+      hyprspace = import ./modules/shared;
     };
 
     nixosConfigurations = nixpkgs.lib.mapAttrs makeHostConfig hosts;

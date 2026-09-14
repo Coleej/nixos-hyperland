@@ -5,8 +5,8 @@
   hyprland ? null,
   ...
 }: let
-  cfg = config.hyperland.hyprland;
-  user = config.hyperland.user;
+  cfg = config.hyprspace.hyprland;
+  user = config.hyprspace.user;
   userHome = user.home;
   userName = user.name;
   userGroup = user.group;
@@ -18,8 +18,12 @@
   hypridle = hyprlandPkgs.hypridle or null;
   hyprlock = hyprlandPkgs.hyprlock or null;
   defaultWallpaper = ../../wallpapers/default.jpg;
+  # DankMaterialShell replaces hyprpaper/hypridle/hyprlock; when the
+  # dankshell stack is active those daemons must not run. `or false` keeps
+  # this module importable without modules/shared/dankshell.nix.
+  dankshell = config.hyprspace.dankshell.enable or false;
 in {
-  options.hyperland.hyprland = {
+  options.hyprspace.hyprland = {
     enable = lib.mkEnableOption "Hyprland base setup";
     useHomeManager = lib.mkOption {
       type = lib.types.bool;
@@ -73,8 +77,8 @@ in {
 
     hardware.graphics.enable32Bit = lib.mkIf cfg.amd.enable true;
 
-    systemd.user.services.hyprvibe-hyprpaper = lib.mkIf (hyprpaper != null) {
-      description = "Hyperland: hyprpaper wallpaper daemon";
+    systemd.user.services.hyprvibe-hyprpaper = lib.mkIf (hyprpaper != null && !dankshell) {
+      description = "Hyprspace: hyprpaper wallpaper daemon";
       after = ["graphical-session.target"];
       wantedBy = ["graphical-session.target"];
       serviceConfig = {
@@ -120,8 +124,8 @@ in {
       };
     };
 
-    systemd.user.services.hypridle = lib.mkIf (hypridle != null && cfg.hypridleConfig != null) {
-      description = "Hyperland: hypridle daemon";
+    systemd.user.services.hypridle = lib.mkIf (hypridle != null && cfg.hypridleConfig != null && !dankshell) {
+      description = "Hyprspace: hypridle daemon";
       after = ["graphical-session.target"];
       wantedBy = ["graphical-session.target"];
       serviceConfig = {
@@ -131,8 +135,8 @@ in {
       };
     };
 
-    systemd.user.services.hyprlock = lib.mkIf (hyprlock != null) {
-      description = "Hyperland: hyprlock daemon";
+    systemd.user.services.hyprlock = lib.mkIf (hyprlock != null && !dankshell) {
+      description = "Hyprspace: hyprlock daemon";
       after = ["graphical-session.target"];
       wantedBy = ["graphical-session.target"];
       serviceConfig = {
@@ -142,15 +146,15 @@ in {
       };
     };
 
-    systemd.user.services.hyperland-setup = {
-      description = "Hyperland: setup Hyprland configs in user home";
+    systemd.user.services.hyprspace-setup = {
+      description = "Hyprspace: setup Hyprland configs in user home";
       wantedBy = ["graphical-session.target"];
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
-        ExecStart = pkgs.writeShellScript "hyperland-setup" ''
+        ExecStart = pkgs.writeShellScript "hyprspace-setup" ''
           set -euo pipefail
-          echo "[hyperland] setting up Hyprland configs"
+          echo "[hyprspace] setting up Hyprland configs"
 
           WALLPAPER_PATH="${
             if cfg.wallpaper != null
@@ -200,7 +204,7 @@ in {
           ''}
 
           chown -R ${userName}:${userGroup} ${userHome}/.config/hypr
-          echo "[hyperland] Hyprland setup complete"
+          echo "[hyprspace] Hyprland setup complete"
         '';
       };
     };

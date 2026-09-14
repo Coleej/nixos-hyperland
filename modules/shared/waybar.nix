@@ -4,13 +4,13 @@
   config,
   ...
 }: let
-  cfg = config.hyperland.waybar;
-  user = config.hyperland.user;
+  cfg = config.hyprspace.waybar;
+  user = config.hyprspace.user;
   userHome = user.home;
   userName = user.name;
   userGroup = user.group;
 in {
-  options.hyperland.waybar = {
+  options.hyprspace.waybar = {
     enable = lib.mkEnableOption "Waybar setup and config install";
     useHomeManager = lib.mkOption {
       type = lib.types.bool;
@@ -39,8 +39,8 @@ in {
 
     systemd.user.services.waybar = {
       description = "Waybar status bar";
-      after = ["graphical-session.target" "hyperland-waybar-setup.service"];
-      requires = ["hyperland-waybar-setup.service"];
+      after = ["graphical-session.target" "hyprspace-waybar-setup.service"];
+      requires = ["hyprspace-waybar-setup.service"];
       wantedBy = ["graphical-session.target"];
       path = with pkgs; [bash dunst playerctl jq curl];
       serviceConfig = {
@@ -51,15 +51,15 @@ in {
       };
     };
 
-    systemd.user.services.hyperland-waybar-setup = {
-      description = "Hyperland: setup Waybar configs in user home";
+    systemd.user.services.hyprspace-waybar-setup = {
+      description = "Hyprspace: setup Waybar configs in user home";
       wantedBy = ["graphical-session.target"];
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
-        ExecStart = pkgs.writeShellScript "hyperland-waybar-setup" ''
+        ExecStart = pkgs.writeShellScript "hyprspace-waybar-setup" ''
           set -euo pipefail
-          echo "[hyperland][waybar] setting up Waybar configs"
+          echo "[hyprspace][waybar] setting up Waybar configs"
 
           mkdir -p ${userHome}/.config/waybar/scripts ${userHome}/.local/bin
 
@@ -93,7 +93,7 @@ in {
           fi
 
           chown -R ${userName}:${userGroup} ${userHome}/.config/waybar
-          echo "[hyperland][waybar] Waybar setup complete"
+          echo "[hyprspace][waybar] Waybar setup complete"
         '';
       };
     };

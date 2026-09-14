@@ -4,9 +4,9 @@
   config,
   ...
 }: let
-  cfg = config.hyperland.packages;
+  cfg = config.hyprspace.packages;
 in {
-  options.hyperland.packages = {
+  options.hyprspace.packages = {
     enable = lib.mkEnableOption "Shared package groups";
     base.enable = lib.mkEnableOption "Common CLI utilities";
     desktop.enable = lib.mkEnableOption "Desktop helpers for Wayland sessions";
