@@ -7,6 +7,6 @@ hl.window_rule({
 })
 
 hl.window_rule({
-    match = { initial_class = "org.telegram.desktop" },
+    match = { initial_class = "TelegramDesktop" },
     workspace = "special:telegram",
 })
