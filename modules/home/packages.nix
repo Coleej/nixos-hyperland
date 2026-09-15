@@ -16,6 +16,7 @@
     fastfetch
     direnv
     gh
+    cups-pk-helper
     uv
     newsboat
     git-lfs
