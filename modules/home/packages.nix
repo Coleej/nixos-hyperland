@@ -1,4 +1,9 @@
-{pkgs, ...}: {
+{pkgs, ...}: let
+  qmlls = pkgs.runCommand "qmlls" {} ''
+    mkdir -p $out/bin
+    ln -s ${pkgs.qt6.qtdeclarative}/bin/qmlls $out/bin/qmlls
+  '';
+in {
   home.packages = with pkgs; [
     neovim
     git
@@ -30,6 +35,7 @@
     remmina
     pyright
     lua-language-server
+    qmlls
     ruff
     stylua
     nixd
