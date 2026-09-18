@@ -33,6 +33,10 @@
       url = "github:AvengeMedia/DankMaterialShell/stable";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # NOTE: do not `follows` nixpkgs here. hermes-agent's desktop.nix pins an
+    # `electronHeaders` sha256 against the electron version of its own locked
+    # nixpkgs; following ours drifts the electron version and breaks the hash.
+    hermes-agent.url = "github:NousResearch/hermes-agent";
   };
 
   outputs = {
@@ -46,6 +50,7 @@
     claude-code-nix,
     qmd,
     dms,
+    hermes-agent,
     ...
   }: let
     hosts = {
@@ -104,7 +109,8 @@
                     qmd.homeModules.default
                   ]
                   ++ nixpkgs.lib.optional (!isWsl) hypr-binds.homeManagerModules.x86_64-linux.default
-                  ++ nixpkgs.lib.optional (!isWsl) dms.homeModules.dank-material-shell;
+                  ++ nixpkgs.lib.optional (!isWsl) dms.homeModules.dank-material-shell
+                  ++ nixpkgs.lib.optional (!isWsl) hermes-agent.homeManagerModules.default;
                 _module.args = {
                   inherit self;
                   hostName = hostName;

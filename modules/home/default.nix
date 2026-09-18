@@ -8,6 +8,7 @@
     ./secrets.nix
     ./git.nix
     ./email.nix
+    ./hermes.nix
     ./qmd.nix
     ./qmd-mcp.nix
     ./qmd-reindex.nix
