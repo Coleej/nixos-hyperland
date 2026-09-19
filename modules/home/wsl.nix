@@ -8,6 +8,7 @@
     ./git.nix
     ./secrets-wsl.nix
     ./taskwarrior.nix
+    ./opencode.nix
     ./qmd.nix
     ./qmd-reindex.nix
   ];

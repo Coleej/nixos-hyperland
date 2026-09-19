@@ -59,7 +59,6 @@ in {
           kitty
           ghostty
           home-manager
-          opencode
           wl-clipboard
           grim
           slurp

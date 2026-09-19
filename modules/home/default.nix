@@ -9,6 +9,7 @@
     ./git.nix
     ./email.nix
     ./hermes.nix
+    ./opencode.nix
     ./qmd.nix
     ./qmd-mcp.nix
     ./qmd-reindex.nix

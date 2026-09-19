@@ -5,6 +5,7 @@
     secrets = {
       nextcloud_password = {};
       taskchampion_secret = {};
+      hermes_api_server_key = {};
     };
   };
 }

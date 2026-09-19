@@ -51,9 +51,10 @@ hyprspace/
 │       ├── services.nix        # taskwarrior (taskchampion sync), netrc activation script
 │       ├── secrets.nix         # sops age key + secret declarations (desktop)
 │       ├── git.nix, email.nix  # git config (shared), Proton Mail Bridge
-│       ├── wsl.nix             # Headless WSL HM entrypoint — imports packages-wsl/shell/git/secrets-wsl/taskwarrior
+│       ├── opencode.nix        # programs.opencode (shared) — package + opencode.json/tui.json on all hosts; hermes provider apiKey via sops {file:...}
+│       ├── wsl.nix             # Headless WSL HM entrypoint — imports packages-wsl/shell/git/secrets-wsl/taskwarrior/opencode
 │       ├── packages-wsl.nix    # Curated headless CLI/dev packages (no GUI)
-│       ├── secrets-wsl.nix     # sops wiring for WSL — only taskchampion_secret
+│       ├── secrets-wsl.nix     # sops wiring for WSL — taskchampion_secret, anthropic_api_key_wsl, hermes_api_server_key
 │       └── taskwarrior.nix     # Taskwarrior 3 + taskchampion sync (secret injected at activation)
 │       # wsl skips qmd-mcp.nix (no GPU passthrough) — its Claude Code qmd MCP server
 │       # runs natively on the Windows host instead, via Task Scheduler (outside Nix).
